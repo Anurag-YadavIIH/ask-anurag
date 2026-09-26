@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anurag Yadav | Medical imaging and AI/ML</title>
+<meta name="description" content="Anurag Yadav, M.Tech Ophthalmic Engineering (IIT Hyderabad). Retinal image AI, segmentation and secure RAG systems in Python.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF2F2; --paper-2:#E3E9EA; --ink:#15222C; --muted:#56656F; --line:#CBD5D8;
+  --accent:#00717D; --accent-ink:#FFFFFF; --warn:#C0392B;
+  --irf:#E3A100; --srf:#16B8C8; --ped:#C2408A;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E181E; --paper-2:#14222A; --ink:#E4ECEE; --muted:#93A4AC; --line:#253740;
+    --accent:#3CC4D1; --accent-ink:#06171C; --warn:#FF7A6B;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E181E; --paper-2:#14222A; --ink:#E4ECEE; --muted:#93A4AC; --line:#253740;
+  --accent:#3CC4D1; --accent-ink:#06171C; --warn:#FF7A6B;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth; scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--display); font-size:1.0625rem; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+img,canvas{max-width:100%}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent); outline-offset:3px; border-radius:4px}
+.wrap{max-width:1160px; margin:0 auto; padding:0 clamp(1rem,4vw,2.5rem)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* nav */
+header.nav{position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding-top:env(safe-area-inset-top,0px); margin-top:calc(-1 * env(safe-area-inset-top,0px))}
+.nav .wrap{display:flex; align-items:center; gap:1rem; height:60px}
+.brand{font-weight:700; text-decoration:none; font-size:1.05rem; letter-spacing:-.01em}
+.nav ul{display:flex; gap:1.4rem; list-style:none; margin:0 0 0 auto; padding:0}
+.nav ul a{text-decoration:none; color:var(--muted); font-size:.95rem; padding:.3rem 0; border-bottom:2px solid transparent}
+.nav ul a:hover{color:var(--ink)}
+.nav ul a.here{color:var(--ink); border-bottom-color:var(--accent)}
+.theme-btn{border:1px solid var(--line); background:transparent; color:var(--ink); width:38px; height:38px; border-radius:50%; cursor:pointer; display:grid; place-items:center; flex:none}
+.theme-btn svg{width:18px; height:18px}
+.progress{position:absolute; left:0; bottom:-1px; height:2px; background:var(--accent); width:0}
+@media (max-width:760px){ .nav ul{display:none} .theme-btn{margin-left:auto} }
+
+/* hero */
+.hero{padding:clamp(2.2rem,6vw,5rem) 0 clamp(2.5rem,6vw,4.5rem)}
+.hero .wrap{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:clamp(2rem,5vw,4rem); align-items:center}
+@media (max-width:900px){ .hero .wrap{grid-template-columns:1fr} }
+.hello{font-size:1.05rem; color:var(--muted); margin:0 0 .9rem}
+.hello strong{color:var(--ink); font-weight:600}
+h1{font-size:clamp(2.2rem,4.6vw,3.5rem); line-height:1.03; letter-spacing:-.035em; margin:0 0 1.1rem; font-weight:700}
+.typing{font-size:clamp(1.05rem,1.8vw,1.25rem); margin:0 0 1.2rem; min-height:1.6em}
+.typing .word{color:var(--accent); font-weight:600; border-right:2px solid var(--accent); padding-right:3px}
+@media (prefers-reduced-motion: no-preference){ .typing .word{animation:caret 1s steps(1) infinite} }
+@keyframes caret{50%{border-color:transparent}}
+.lede{font-family:var(--serif); font-size:1.15rem; line-height:1.6; color:var(--muted); max-width:34em; margin:0 0 1.4rem}
+.status{display:flex; align-items:center; gap:.6rem; font-size:.95rem; margin:0 0 1.6rem}
+.dot{flex:none; width:9px; height:9px; border-radius:50%; background:#2FA56A; box-shadow:0 0 0 4px color-mix(in srgb,#2FA56A 22%,transparent)}
+.ctas{display:flex; flex-wrap:wrap; gap:.75rem}
+.btn{display:inline-flex; align-items:center; gap:.5rem; padding:.75rem 1.2rem; border-radius:999px; font:600 .98rem var(--display); text-decoration:none; border:1.5px solid var(--ink); cursor:pointer; background:transparent; color:var(--ink)}
+.btn.primary{background:var(--ink); color:var(--paper)}
+.btn:hover{transform:translateY(-1px)}
+.btn svg{width:18px; height:18px}
+
+/* scan */
+.scan{margin:0}
+.scan-frame{position:relative; background:#000; border-radius:14px; overflow:hidden; touch-action:pan-y; cursor:ew-resize; box-shadow:0 30px 60px -30px rgba(10,30,40,.55)}
+.scan-frame canvas{display:block; width:100%; aspect-ratio:720/320; height:auto}
+.scan-tag{position:absolute; left:14px; top:12px; font-size:.8rem; color:#9FB3BA; pointer-events:none}
+.scan-tag b{color:#E7F1F3; font-weight:600}
+.scan-controls{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.6rem 1rem; margin:.9rem 0 .5rem}
+.seg{display:inline-flex; border:1.5px solid var(--line); border-radius:999px; padding:3px}
+.seg button{border:0; background:transparent; color:var(--muted); padding:.35rem .8rem; border-radius:999px; font-size:.88rem; font-weight:600; cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.scan-range{flex:1 1 160px; accent-color:var(--accent)}
+.scan figcaption{font-family:var(--serif); font-size:.98rem; color:var(--muted); line-height:1.55}
+.legend{display:flex; flex-wrap:wrap; gap:.4rem; margin:.7rem 0 0; padding:0; list-style:none}
+.legend button{display:flex; align-items:center; gap:.45rem; font-size:.88rem; border:1.5px solid var(--line); background:transparent; color:var(--ink); border-radius:999px; padding:.3rem .7rem; cursor:pointer}
+.legend button[aria-pressed="false"]{opacity:.45; text-decoration:line-through}
+.sw{width:11px; height:11px; border-radius:3px}
+
+/* sections */
+section.block{padding:clamp(3rem,7vw,5.5rem) 0; border-top:1px solid var(--line)}
+h2{font-size:clamp(1.8rem,3.6vw,2.6rem); letter-spacing:-.03em; line-height:1.08; margin:0 0 .8rem; font-weight:700}
+.intro{font-family:var(--serif); font-size:1.12rem; line-height:1.65; color:var(--muted); max-width:38em; margin:0 0 2.2rem}
+
+/* story */
+.story{display:grid; grid-template-columns:minmax(0,4fr) minmax(0,6fr); gap:clamp(2rem,5vw,4.5rem)}
+@media (max-width:900px){ .story{grid-template-columns:1fr} }
+.story .prose p{font-family:var(--serif); font-size:1.12rem; line-height:1.7; margin:0 0 1.1rem; max-width:36em}
+.timeline{list-style:none; margin:0; padding:0; position:relative}
+.timeline::before{content:""; position:absolute; left:5px; top:8px; bottom:8px; width:2px; background:var(--line)}
+.timeline li{position:relative; padding:0 0 1.2rem 2rem}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:""; position:absolute; left:0; top:.55rem; width:12px; height:12px; border-radius:50%; background:var(--paper); border:2px solid var(--accent)}
+.timeline li.now::before{background:var(--accent)}
+.tl-btn{all:unset; display:block; width:100%; cursor:pointer; border-radius:8px; padding:.2rem .4rem; margin-left:-.4rem}
+.tl-btn:hover{background:var(--paper-2)}
+.tl-btn:focus-visible{outline:3px solid var(--accent)}
+.when{font-size:.9rem; color:var(--accent); font-weight:600}
+.timeline h3{font-size:1.12rem; margin:.1rem 0 0; letter-spacing:-.01em; display:flex; justify-content:space-between; gap:1rem}
+.timeline h3 .pm{color:var(--muted); font-weight:400; transition:transform .2s}
+.timeline li.open h3 .pm{transform:rotate(45deg)}
+.tl-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .25s ease}
+.tl-body > p{min-height:0; overflow:hidden; margin:0; font-family:var(--serif); color:var(--muted); line-height:1.6}
+.timeline li.open .tl-body{grid-template-rows:1fr}
+.timeline li.open .tl-body > p{padding-top:.3rem}
+
+/* playground */
+.play{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:1.25rem}
+@media (max-width:900px){ .play{grid-template-columns:1fr} }
+.panel{border:1px solid var(--line); border-radius:14px; padding:clamp(1.1rem,2.5vw,1.6rem); background:var(--paper)}
+.panel h3{font-size:1.3rem; margin:0 0 .35rem; letter-spacing:-.02em}
+.panel .how{font-family:var(--serif); color:var(--muted); margin:0 0 1rem; line-height:1.55}
+.ask-row{display:flex; gap:.5rem}
+.ask-row input{flex:1; min-width:0; font:1rem var(--display); padding:.7rem .9rem; border-radius:10px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink)}
+.ask-row input:focus{outline:none; border-color:var(--accent)}
+.ask-row .btn{padding:.6rem 1rem}
+.suggest{display:flex; flex-wrap:wrap; gap:.4rem; margin:.8rem 0 1rem}
+.suggest button{border:1px dashed var(--line); background:transparent; color:var(--muted); border-radius:999px; padding:.3rem .7rem; font-size:.86rem; cursor:pointer}
+.suggest button:hover{color:var(--ink); border-color:var(--ink)}
+.answer{min-height:9rem; border-radius:10px; background:var(--paper-2); padding:1rem 1.1rem}
+.answer p{margin:0 0 .8rem; font-family:var(--serif); line-height:1.6}
+.answer .empty{color:var(--muted)}
+.hits{list-style:none; margin:0; padding:0; display:grid; gap:.35rem}
+.hits li{display:grid; grid-template-columns:minmax(0,1fr) 90px 2.6rem; gap:.6rem; align-items:center; font-size:.85rem; color:var(--muted)}
+.hits .bar{height:6px; border-radius:3px; background:var(--line); overflow:hidden}
+.hits .bar i{display:block; height:100%; background:var(--accent)}
+.hits .sc{text-align:right; font-variant-numeric:tabular-nums}
+.hits-label{font-size:.82rem; color:var(--muted); margin:0 0 .35rem}
+
+.leak-boxes{display:grid; grid-template-columns:3fr 2fr; gap:.7rem; margin:0 0 .9rem}
+.box{border:1.5px solid var(--line); border-radius:10px; padding:.6rem; min-height:128px}
+.box h4{margin:0 0 .5rem; font-size:.85rem; color:var(--muted); font-weight:600}
+.dots{display:flex; flex-wrap:wrap; gap:6px}
+.pd{width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-size:.62rem; font-weight:700; color:#fff}
+.pd.leak{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--warn)}
+.leak-read{display:flex; align-items:baseline; gap:.7rem; margin:0 0 .5rem}
+.leak-num{font-size:2.2rem; font-weight:700; letter-spacing:-.03em; line-height:1}
+.leak-num.bad{color:var(--warn)}
+.leak-num.good{color:#2FA56A}
+.leak-msg{font-family:var(--serif); color:var(--muted); line-height:1.55; margin:0 0 1rem}
+.leak-actions{display:flex; flex-wrap:wrap; gap:.6rem; align-items:center}
+@media (prefers-reduced-motion: no-preference){ .dots.flash{animation:pop .35s ease} }
+@keyframes pop{from{opacity:.2; transform:scale(.97)} to{opacity:1; transform:none}}
+
+/* projects */
+.filters{display:flex; flex-wrap:wrap; gap:.5rem; margin:0 0 1rem}
+.chip{border:1.5px solid var(--line); background:transparent; color:var(--ink); padding:.5rem 1rem; border-radius:999px; font:500 .95rem var(--display); cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--paper)}
+.skill-note{min-height:1.6em; margin:0 0 1.2rem; color:var(--muted); font-size:.95rem}
+.skill-note button{margin-left:.4rem}
+.projects{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.25rem}
+@media (max-width:760px){ .projects{grid-template-columns:1fr} }
+.proj{border:1px solid var(--line); border-radius:12px; padding:1.4rem 1.4rem 1.2rem; background:var(--paper); display:flex; flex-direction:column}
+.proj.featured{grid-column:1 / -1; background:var(--paper-2); border-color:transparent; padding:clamp(1.4rem,3vw,2.2rem)}
+.proj.featured h3{font-size:clamp(1.5rem,2.6vw,2rem)}
+.proj-top{display:flex; justify-content:space-between; gap:1rem; align-items:flex-start}
+.proj h3{font-size:1.25rem; margin:0 0 .45rem; letter-spacing:-.02em; line-height:1.15}
+.badge{font-size:.8rem; font-weight:600; padding:.25rem .6rem; border-radius:6px; background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent); white-space:nowrap}
+.proj p.sum{font-family:var(--serif); color:var(--muted); line-height:1.6; margin:0 0 1rem; max-width:44em}
+.stack{display:flex; flex-wrap:wrap; gap:.35rem; margin:0 0 1rem; padding:0; list-style:none}
+.stack li{font-size:.82rem; padding:.2rem .55rem; border:1px solid var(--line); border-radius:5px; color:var(--muted)}
+.stack li.hit{border-color:var(--accent); color:var(--accent); font-weight:600}
+.proj-actions{margin-top:auto; display:flex; flex-wrap:wrap; gap:.4rem 1.2rem; align-items:center}
+.linkish{background:none; border:none; padding:0; font:600 .95rem var(--display); color:var(--accent); cursor:pointer; text-decoration:underline; text-underline-offset:3px}
+.more{display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s ease}
+.more > div{min-height:0; overflow:hidden}
+.proj.open .more{grid-template-rows:1fr}
+.more ul{margin:0 0 1rem; padding-left:1.1rem; font-family:var(--serif); line-height:1.6}
+.more li{margin:.2rem 0}
+@media (prefers-reduced-motion: reduce){ .more,.tl-body{transition:none} .btn:hover{transform:none} }
+
+/* skills */
+.skills{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2rem}
+@media (max-width:900px){ .skills{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:520px){ .skills{grid-template-columns:1fr} }
+.skills h3{font-size:1.05rem; margin:0 0 .7rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink)}
+.skills ul{list-style:none; padding:0; margin:0}
+.skills li{border-bottom:1px solid var(--line)}
+.skills li > span{display:block; padding:.4rem 0; font-size:.98rem}
+.sk{all:unset; box-sizing:border-box; display:flex; justify-content:space-between; width:100%; padding:.4rem 0; font-size:.98rem; cursor:pointer}
+.sk:hover{color:var(--accent)}
+.sk:focus-visible{outline:3px solid var(--accent)}
+.sk small{color:var(--muted); font-size:.82rem}
+
+/* contact */
+.contact{background:var(--ink); color:var(--paper); border-top:none}
+.contact h2{font-size:clamp(2.1rem,5vw,3.4rem); max-width:14em}
+.contact .intro{color:color-mix(in srgb,var(--paper) 72%,transparent)}
+.contact-row{display:flex; flex-wrap:wrap; gap:.8rem}
+.contact .btn{border-color:var(--paper); color:var(--paper)}
+.contact .btn.primary{background:var(--paper); color:var(--ink)}
+.toast{margin-top:1rem; min-height:1.4em; font-size:.95rem; color:color-mix(in srgb,var(--paper) 80%,transparent)}
+footer{background:var(--ink); color:color-mix(in srgb,var(--paper) 55%,transparent); font-size:.88rem; padding:1.5rem 0 2rem; border-top:1px solid color-mix(in srgb,var(--paper) 14%,transparent)}
+
+/* ============ AI Anurag chat ============ */
+.chat-fab{position:fixed; right:max(16px,env(safe-area-inset-right)); bottom:max(16px,env(safe-area-inset-bottom)); z-index:40; display:flex; align-items:center; gap:.6rem; padding:.45rem 1.1rem .45rem .45rem; border-radius:999px; border:0; background:var(--ink); color:var(--paper); font:600 .98rem var(--display); cursor:pointer; box-shadow:0 12px 30px -10px rgba(10,30,40,.5)}
+.chat-fab .av{width:38px; height:38px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:grid; place-items:center; font-weight:700; font-size:.9rem; position:relative}
+.chat-fab .av::after{content:""; position:absolute; right:0; bottom:0; width:10px; height:10px; border-radius:50%; background:#2FA56A; border:2px solid var(--ink)}
+.chat-fab[aria-expanded="true"]{display:none}
+.chat{position:fixed; right:max(16px,env(safe-area-inset-right)); bottom:max(16px,env(safe-area-inset-bottom)); z-index:41; width:min(390px,calc(100vw - 32px)); height:min(600px,calc(100dvh - 32px)); display:none; flex-direction:column; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:0 30px 70px -20px rgba(10,30,40,.55)}
+.chat.open{display:flex}
+@media (prefers-reduced-motion: no-preference){ .chat.open{animation:chatIn .22s ease-out} }
+@keyframes chatIn{from{opacity:0; transform:translateY(12px) scale(.98)} to{opacity:1; transform:none}}
+.chat-head{display:flex; align-items:center; gap:.7rem; padding:.8rem .9rem; background:var(--ink); color:var(--paper)}
+.chat-head .av{width:40px; height:40px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:grid; place-items:center; font-weight:700; flex:none}
+.chat-head b{display:block; font-size:1rem}
+.chat-head small{display:block; font-size:.8rem; opacity:.75}
+.chat-close{margin-left:auto; width:34px; height:34px; border-radius:50%; border:1px solid color-mix(in srgb,var(--paper) 30%,transparent); background:transparent; color:var(--paper); cursor:pointer; font-size:1.2rem; line-height:1}
+.chat-log{flex:1; overflow-y:auto; padding:1rem .9rem; display:flex; flex-direction:column; gap:.6rem; overscroll-behavior:contain}
+.msg{max-width:86%; padding:.6rem .8rem; border-radius:14px; line-height:1.5; font-size:.95rem; white-space:pre-wrap; overflow-wrap:anywhere}
+.msg.bot{background:var(--paper-2); align-self:flex-start; border-bottom-left-radius:4px}
+.msg.me{background:var(--accent); color:var(--accent-ink); align-self:flex-end; border-bottom-right-radius:4px}
+.msg.note{align-self:center; background:transparent; color:var(--muted); font-size:.82rem; text-align:center; padding:.2rem}
+.msg a{color:inherit}
+.typing-dots{display:inline-flex; gap:4px}
+.typing-dots i{width:6px; height:6px; border-radius:50%; background:var(--muted); opacity:.5}
+@media (prefers-reduced-motion: no-preference){ .typing-dots i{animation:blink 1s infinite} .typing-dots i:nth-child(2){animation-delay:.15s} .typing-dots i:nth-child(3){animation-delay:.3s} }
+@keyframes blink{50%{opacity:1}}
+.chat-sugs{display:flex; flex-wrap:wrap; gap:.35rem; padding:0 .9rem .6rem}
+.chat-sugs button{border:1px dashed var(--line); background:transparent; color:var(--muted); border-radius:999px; padding:.28rem .65rem; font-size:.82rem; cursor:pointer}
+.chat-sugs button:hover{color:var(--ink); border-color:var(--ink)}
+.chat-foot{border-top:1px solid var(--line); padding:.6rem .7rem .7rem}
+.chat-form{display:flex; gap:.45rem}
+.chat-form input{flex:1; min-width:0; font:16px var(--display); padding:.6rem .8rem; border-radius:10px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink)}
+.chat-form input:focus{outline:none; border-color:var(--accent)}
+.chat-form button{border:0; border-radius:10px; background:var(--ink); color:var(--paper); font-weight:600; padding:0 .95rem; cursor:pointer}
+.chat-form button:disabled,.chat-form input:disabled{opacity:.5; cursor:not-allowed}
+.chat-meta{display:flex; justify-content:space-between; gap:.5rem; margin-top:.4rem; font-size:.78rem; color:var(--muted)}
+.chat-meta .left{font-weight:600}
+.limit-card{align-self:stretch; border:1.5px solid var(--accent); border-radius:12px; padding:.8rem; font-size:.92rem; line-height:1.5}
+.limit-card .row{display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.6rem}
+.limit-card a{display:inline-block; padding:.4rem .8rem; border-radius:999px; background:var(--ink); color:var(--paper); text-decoration:none; font-weight:600; font-size:.85rem}
+.limit-card a.alt{background:transparent; color:var(--ink); border:1.5px solid var(--ink)}
+@media (max-width:480px){ .chat{right:0; bottom:0; width:100vw; height:100dvh; border-radius:0; border:0} .chat-fab .lbl{display:none} .chat-fab{padding:.45rem} }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">Anurag Yadav</a>
+    <nav aria-label="Sections"><ul id="navlinks">
+      <li><a href="#story">About</a></li>
+      <li><a href="#play">Try it</a></li>
+      <li><a href="#work">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul></nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Switch colour theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="hello">Hi, I'm <strong>Anurag Yadav</strong></p>
+        <h1>AI for medical images, built by someone who studied the eye.</h1>
+        <p class="typing" aria-live="off">I build <span class="word" id="typeWord">segmentation models for retinal scans</span></p>
+        <p class="lede">M.Tech in Ophthalmic Engineering from IIT Hyderabad (CGPA 9.18). I build retinal imaging pipelines, segmentation models and secure RAG systems in Python, with the clinical context to know what the pixels mean.</p>
+        <p class="status"><span class="dot" aria-hidden="true"></span>Open to AI/ML and medical imaging roles. Open to relocation and remote.</p>
+        <div class="ctas">
+          <button class="btn primary" type="button" data-open-chat>Ask AI Anurag</button>
+          <a class="btn" href="#play">Try the demos</a>
+          <a class="btn" id="resumeLink" href="#contact">Get my resume</a>
+          <a class="btn" href="https://github.com/Anurag-YadavIIH" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.880-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.550-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.170-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <figure class="scan">
+        <div class="scan-frame" id="scanFrame">
+          <canvas id="scan" width="1440" height="640" aria-label="Synthetic retinal OCT scan with fluid segmentation overlay"></canvas>
+          <span class="scan-tag"><b>Retinal OCT B-scan</b>, synthetic</span>
+        </div>
+        <div class="scan-controls">
+          <div class="seg" role="group" aria-label="Scanner style" id="vendors">
+            <button aria-pressed="true" data-v="0">Scanner A</button>
+            <button aria-pressed="false" data-v="1">Scanner B</button>
+            <button aria-pressed="false" data-v="2">Scanner C</button>
+          </div>
+          <label for="scanRange" class="sr">Reveal segmentation</label>
+          <input type="range" id="scanRange" class="scan-range" min="0" max="100" value="0">
+        </div>
+        <figcaption>Drag across the scan to reveal the segmentation, switch scanners to see why models trained on one device fail on another, and tap a fluid type to hide it. This is what my current project, OcuVal, works on.
+          <ul class="legend" id="legend">
+            <li><button aria-pressed="true" data-l="1"><span class="sw" style="background:var(--irf)"></span>Intraretinal fluid</button></li>
+            <li><button aria-pressed="true" data-l="2"><span class="sw" style="background:var(--srf)"></span>Subretinal fluid</button></li>
+            <li><button aria-pressed="true" data-l="3"><span class="sw" style="background:var(--ped)"></span>Pigment epithelial detachment</button></li>
+          </ul>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="block" id="story">
+    <div class="wrap story">
+      <div class="prose">
+        <h2>From concrete to corneas to code</h2>
+        <p>I started as a civil engineer. Structural thinking led me to biomechanics, and an M.Tech at IIT Hyderabad took me into ophthalmic engineering, where my thesis simulated how suture tension changes the cornea after a transplant.</p>
+        <p>That work showed me how much of eye care now runs on images. Since then I have focused on AI for retinal imaging: cleaning and auditing datasets so models can be trusted, and segmenting disease in OCT scans across different devices.</p>
+        <p>Alongside the imaging work I build applied GenAI systems, including a privacy-first RAG assistant, because the same habits matter in both: careful data handling, honest evaluation and clear documentation.</p>
+      </div>
+      <ol class="timeline" id="timeline">
+        <li><button class="tl-btn" aria-expanded="false"><span class="when">2021</span><h3>B.Tech, Civil Engineering <span class="pm" aria-hidden="true">+</span></h3></button>
+          <div class="tl-body"><p>Bangalore Institute of Technology. Foundations in mechanics, surveying and environmental engineering, which later fed straight into biomechanics.</p></div></li>
+        <li><button class="tl-btn" aria-expanded="false"><span class="when">2023</span><h3>GATE, Environmental Science <span class="pm" aria-hidden="true">+</span></h3></button>
+          <div class="tl-body"><p>Qualified with a score of 450 and joined IIT Hyderabad.</p></div></li>
+        <li><button class="tl-btn" aria-expanded="false"><span class="when">2023 to 2025</span><h3>M.Tech, Ophthalmic Engineering, IIT Hyderabad <span class="pm" aria-hidden="true">+</span></h3></button>
+          <div class="tl-body"><p>CGPA 9.18. Thesis: finite element modelling of penetrating keratoplasty in Abaqus and Python, studying how suture tension affects corneal biomechanics.</p></div></li>
+        <li><button class="tl-btn" aria-expanded="false"><span class="when">Aug to Oct 2025</span><h3>Associate Consultant Intern, Orbees Medical <span class="pm" aria-hidden="true">+</span></h3></button>
+          <div class="tl-body"><p>First industry role, in the medical domain.</p></div></li>
+        <li class="now open"><button class="tl-btn" aria-expanded="true"><span class="when">2026, now</span><h3>Building medical imaging AI <span class="pm" aria-hidden="true">+</span></h3></button>
+          <div class="tl-body"><p>RetinaPrep for fundus dataset auditing, and OcuVal for OCT fluid segmentation as a registered RETOUCH challenge team.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="play">
+    <div class="wrap">
+      <h2>Try it yourself</h2>
+      <p class="intro">Two small demos of ideas from my projects. Both run entirely in your browser.</p>
+      <div class="play">
+        <div class="panel">
+          <h3>Search my portfolio</h3>
+          <p class="how">A tiny retrieval engine, the same idea behind my RAG projects. It ranks passages about me with BM25 and shows the evidence it used. For a real conversation, <button class="linkish" data-open-chat type="button">ask AI Anurag</button>.</p>
+          <form class="ask-row" id="askForm">
+            <label for="askInput" class="sr">Your question</label>
+            <input id="askInput" type="text" placeholder="e.g. Has he worked with medical images?" autocomplete="off">
+            <button class="btn primary" type="submit">Ask</button>
+          </form>
+          <div class="suggest" id="suggest"></div>
+          <div class="answer" id="answer" aria-live="polite"><p class="empty">Pick a question above or type your own.</p></div>
+        </div>
+
+        <div class="panel">
+          <h3>Spot the data leak</h3>
+          <p class="how">10 patients, 4 eye images each. Split the images into train and test and see how many patients end up on both sides. This is the check RetinaPrep automates.</p>
+          <div class="seg" role="group" aria-label="Split method" id="splitMode" style="margin-bottom:.9rem">
+            <button aria-pressed="true" data-m="image">Split by image</button>
+            <button aria-pressed="false" data-m="patient">Split by patient</button>
+          </div>
+          <div class="leak-boxes">
+            <div class="box"><h4>Train</h4><div class="dots" id="trainDots"></div></div>
+            <div class="box"><h4>Test</h4><div class="dots" id="testDots"></div></div>
+          </div>
+          <div class="leak-read"><span class="leak-num" id="leakNum">0</span><span>patients in both train and test</span></div>
+          <p class="leak-msg" id="leakMsg"></p>
+          <div class="leak-actions"><button class="btn" id="reshuffle" type="button">Reshuffle</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <div class="wrap">
+      <h2>Projects</h2>
+      <p class="intro">Filter by area, or click any skill further down to see the projects that use it. Open a project to see how it works.</p>
+      <div class="filters" role="group" aria-label="Filter projects" id="filters"></div>
+      <p class="skill-note" id="skillNote" aria-live="polite"></p>
+      <div class="projects" id="projects"></div>
+    </div>
+  </section>
+
+  <section class="block" id="skills">
+    <div class="wrap">
+      <h2>What I work with</h2>
+      <p class="intro">Click a skill to jump to the projects where I used it.</p>
+      <div class="skills" id="skillGrid"></div>
+    </div>
+  </section>
+
+  <section class="block contact" id="contact">
+    <div class="wrap">
+      <h2>Let's talk about your imaging or AI team.</h2>
+      <p class="intro">I'm looking for AI/ML engineer, medical imaging and data roles. The quickest way to reach me is email.</p>
+      <div class="contact-row">
+        <button class="btn primary" id="copyEmail" type="button">Copy email address</button>
+        <a class="btn" id="mailLink" href="#">Send an email</a>
+        <a class="btn" id="liLink" href="#" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/Anurag-YadavIIH" target="_blank" rel="noopener">GitHub</a>
+        <button class="btn" type="button" data-open-chat>Ask AI Anurag</button>
+      </div>
+      <p class="toast" id="toast" role="status"></p>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Anurag Yadav, 2026. The OCT image and demos are generated in your browser. No patient data is used. AI Anurag is an AI assistant and can make mistakes; email me to confirm anything important.</div></footer>
+
+
+<button class="chat-fab" id="chatFab" aria-expanded="false" aria-controls="chat"><span class="av" aria-hidden="true">AY</span><span class="lbl">Ask AI Anurag</span></button>
+<section class="chat" id="chat" role="dialog" aria-modal="false" aria-labelledby="chatTitle">
+  <div class="chat-head">
+    <span class="av" aria-hidden="true">AY</span>
+    <div><b id="chatTitle">AI Anurag</b><small>An AI that answers from my resume</small></div>
+    <button class="chat-close" id="chatClose" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="chat-log" id="chatLog" aria-live="polite"></div>
+  <div class="chat-sugs" id="chatSugs"></div>
+  <div class="chat-foot">
+    <form class="chat-form" id="chatForm">
+      <label for="chatInput" class="sr">Your question</label>
+      <input id="chatInput" maxlength="500" autocomplete="off" placeholder="Ask about my projects, skills...">
+      <button type="submit" id="chatSend">Send</button>
+    </form>
+    <div class="chat-meta"><span class="left" id="chatLeft"></span><span>Questions are logged to improve answers</span></div>
+  </div>
+</section>
+
+<script>
+/* ================= edit these ================= */
+const EMAIL = "ritesh.anurag325@gmail.com";
+const LINKEDIN = "https://www.linkedin.com/in/anuragyadav-fem-bioengineering/";
+const RESUME_URL = "https://drive.google.com/file/d/1IZLPwaw_fSG4Yq2RCNmYov0nQsAbKwTM/view?usp=sharing";
+/* ============================================== */
+
+const $=s=>document.querySelector(s);
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+/* theme */
+(function(){
+  const root=document.documentElement;
+  try{ const t=localStorage.getItem("theme"); if(t) root.setAttribute("data-theme",t); }catch(e){}
+  $("#themeBtn").addEventListener("click",()=>{
+    const cur=root.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+    const next=cur==="dark"?"light":"dark";
+    root.setAttribute("data-theme",next);
+    try{ localStorage.setItem("theme",next); }catch(e){}
+  });
+})();
+
+/* scroll progress + active nav */
+(function(){
+  const bar=$("#progress"), links=[...document.querySelectorAll("#navlinks a")];
+  const secs=links.map(a=>document.querySelector(a.getAttribute("href")));
+  function onScroll(){
+    const h=document.documentElement.scrollHeight-innerHeight;
+    bar.style.width=(h>0?scrollY/h*100:0)+"%";
+    let cur=-1; secs.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top<innerHeight*.35) cur=i; });
+    links.forEach((a,i)=>a.classList.toggle("here",i===cur));
+  }
+  addEventListener("scroll",onScroll,{passive:true}); onScroll();
+})();
+
+/* typing roles */
+(function(){
+  const el=$("#typeWord");
+  const words=["segmentation models for retinal scans","dataset audits that catch data leakage","secure RAG assistants with cited answers","multi-agent LLM workflows","clear, tested Python pipelines"];
+  if(reduced){ let i=0; setInterval(()=>{ i=(i+1)%words.length; el.textContent=words[i]; },3000); return; }
+  let w=0,c=words[0].length,del=true;
+  function tick(){
+    const word=words[w];
+    if(del){ c--; if(c<=0){ del=false; w=(w+1)%words.length; } }
+    else { c++; if(c>=words[w].length){ del=true; el.textContent=words[w]; return setTimeout(tick,2000); } }
+    el.textContent=words[w].slice(0,c);
+    setTimeout(tick, del?28:55);
+  }
+  setTimeout(tick,2600);
+})();
+
+/* contact */
+$("#mailLink").href="mailto:"+EMAIL;
+$("#liLink").href=LINKEDIN;
+if(RESUME_URL){ const r=$("#resumeLink"); r.href=RESUME_URL; r.target="_blank"; r.rel="noopener"; }
+$("#copyEmail").addEventListener("click",async()=>{
+  const t=$("#toast");
+  try{ await navigator.clipboard.writeText(EMAIL); t.textContent="Email copied: "+EMAIL; }
+  catch(e){ t.textContent="Email: "+EMAIL; }
+});
+
+/* timeline */
+$("#timeline").addEventListener("click",e=>{
+  const b=e.target.closest(".tl-btn"); if(!b) return;
+  const li=b.parentElement, open=li.classList.toggle("open");
+  b.setAttribute("aria-expanded",open);
+});
+
+/* ================= projects + skills ================= */
+const GH="https://github.com/Anurag-YadavIIH/";
+const CATS=[["all","All"],["imaging","Medical imaging"],["genai","GenAI and agents"],["ml","Machine learning"],["data","Data analytics"],["research","Research"]];
+const PROJECTS=[
+ {id:"ocuval",featured:true,cat:["imaging"],title:"OcuVal: retinal fluid segmentation in OCT",badge:"In progress",
+  sum:"Segments the three types of retinal fluid in OCT scans, reads DICOM directly, and checks that the model holds up across scanners from different manufacturers. Documented the way medical device software is.",
+  stack:["Python","Deep learning","Segmentation","DICOM","RETOUCH dataset"],
+  more:["Trained on the RETOUCH challenge data, with scans from Cirrus, Spectralis and Topcon devices. Registered challenge team: OcuVal.","Cross-vendor validation, because a model that only works on one scanner is not usable in a real clinic.","Documentation modelled on IEC 62304, the standard for medical device software.","Publishing of methods and results confirmed with the challenge organisers."],
+  links:[["Code on GitHub",GH+"retinal-oct-fluid-segmentation"]]},
+ {id:"retinaprep",cat:["imaging"],title:"RetinaPrep: fundus dataset audit",badge:"Active",
+  sum:"A pipeline that curates retinal fundus image datasets and audits them for data leakage, the quiet problem that makes medical AI models look better than they are.",
+  stack:["Python","Image processing","Data quality","GitHub Pages"],
+  more:["Produces readable audit reports published on GitHub Pages.","Being extended with segmentation, a second dataset and a cross-camera audit.","Try the leakage demo above to see the problem it solves."],
+  links:[["Code",GH+"retinal-dataset-audit"],["Audit reports","https://anurag-yadaviih.github.io/retinal-dataset-audit"]]},
+ {id:"consultrag",cat:["genai"],title:"ConsultRAG: secure RAG for consulting teams",badge:"Flagship GenAI",
+  sum:"Ask questions across slide decks, PDFs and meeting recordings and get answers with citations, while client data stays private and separated by engagement.",
+  stack:["RAG","FastAPI","PostgreSQL","Ollama","Next.js","Docker"],
+  more:["Personal and health data is redacted locally before anything is indexed.","Role-based access with each client engagement kept isolated.","Hybrid dense and BM25 retrieval fused with RRF, plus optional cross-encoder reranking.","Reads .pptx slides and speaker notes, PDF, markdown, and meeting audio with timestamps.","Retrieval measured with hit@k, recall@k and MRR against a gold question set."],
+  links:[["Code",GH+"consulting-rag-assistant"]]},
+ {id:"retina-dr",cat:["imaging","ml"],title:"Diabetic retinopathy detection",
+  sum:"Classifies diabetic retinopathy from retinal fundus photos using a fine-tuned ResNet18, served through a simple Flask web app.",
+  stack:["Deep learning","Transfer learning","Flask","Python"],
+  more:["End to end: data preparation, training, evaluation and a web interface for predictions."],
+  links:[["Code",GH+"retina-ai-detection"]]},
+ {id:"medagent",cat:["genai"],title:"Medical research agent",
+  sum:"An LLM agent that searches and summarises medical research, grounding its answers in retrieved sources.",
+  stack:["LangChain","RAG","Pinecone","OpenAI API","Python"],
+  more:["Embeddings stored in Pinecone and retrieved for each question.","Built with LangChain and OpenAI APIs."],
+  links:[["Find on GitHub","https://github.com/Anurag-YadavIIH?tab=repositories"]]},
+ {id:"copilot",cat:["genai"],title:"Agentic job application copilot",
+  sum:"Several AI agents work together to help with job applications, from reading a job post to tailoring the application.",
+  stack:["LangGraph","FastAPI","React","TypeScript"],
+  more:["Multi-agent workflow orchestrated with LangGraph, with a FastAPI backend and a React front end."],
+  links:[["Code",GH+"agentic-job-copilot"]]},
+ {id:"resume",cat:["genai"],title:"AI resume tailoring app",
+  sum:"Rewrites a resume for a specific job description so it stays truthful, reads well and passes applicant tracking systems.",
+  stack:["OpenAI API","Python","Prompt design"],
+  more:["LLM-backed tool that produces ATS-friendly resumes tailored to different roles."],
+  links:[["Find on GitHub","https://github.com/Anurag-YadavIIH?tab=repositories"]]},
+ {id:"health",cat:["ml"],title:"Healthcare predictive analytics",
+  sum:"Machine learning models that predict patient outcomes from healthcare data.",
+  stack:["scikit-learn","Python","Data visualisation"],
+  more:["Applied machine learning to healthcare data, from cleaning to model evaluation."],
+  links:[["Find on GitHub","https://github.com/Anurag-YadavIIH?tab=repositories"]]},
+ {id:"wildfire",cat:["ml"],title:"Wildfire prediction",
+  sum:"Models that predict wildfire risk, with a data pipeline and careful evaluation.",
+  stack:["scikit-learn","TensorFlow","Python"],
+  more:["Covers model development, data pipelines and evaluation techniques."],
+  links:[["Find on GitHub","https://github.com/Anurag-YadavIIH?tab=repositories"]]},
+ {id:"recsys",cat:["ml"],title:"Recommendation engine",
+  sum:"Six recommendation models built and compared on the MovieLens dataset, with an interactive Streamlit app to explore the results.",
+  stack:["Python","Streamlit","Recommender systems"],
+  more:["Side by side comparison of six approaches on the same data."],
+  links:[["Code",GH+"ecommerce-recommendation-engine"]]},
+ {id:"pizza",cat:["data"],title:"Pizza sales analytics",
+  sum:"Analysis of a year of pizza sales to find best sellers, busy hours and revenue trends, presented as a dashboard.",
+  stack:["SQL","Power BI","Data visualisation"],
+  more:["Data analysis and visualisation project."],
+  links:[["Find on GitHub","https://github.com/Anurag-YadavIIH?tab=repositories"]]},
+ {id:"draftly",cat:["genai"],title:"Draftly: Gmail AI reply agent",
+  sum:"An agent that reads incoming Gmail messages and drafts replies. Built as a course capstone.",
+  stack:["Java","OpenAI API"],
+  more:["Capstone project for an AI backend engineering course."],
+  links:[["Code",GH+"draftly"]]},
+ {id:"pkfem",cat:["research"],title:"Corneal biomechanics after keratoplasty",badge:"M.Tech thesis",
+  sum:"Finite element simulation of how suture tension changes stress and shape in the cornea after a penetrating keratoplasty (full thickness corneal transplant).",
+  stack:["Abaqus","Finite element analysis","Python"],
+  more:["M.Tech thesis at IIT Hyderabad, advised by Dr. Viswanath Chinthapenta."],
+  links:[["Code and models",GH+"PK-FEM-Corneal-Biomechanics"]]}
+];
+const SKILLS=[
+ ["Machine learning",["Python","Deep learning","Segmentation","Transfer learning","scikit-learn","TensorFlow","Recommender systems"]],
+ ["GenAI and LLMs",["RAG","LangChain","LangGraph","Pinecone","OpenAI API","Ollama","Prompt design"]],
+ ["Engineering",["FastAPI","Flask","Streamlit","React","Next.js","PostgreSQL","SQL","Docker","Java"]],
+ ["Domain and analysis",["DICOM","Image processing","Data quality","Finite element analysis","Abaqus","Power BI","Data visualisation"]]
+];
+let active="all", activeSkill=null;
+const fEl=$("#filters"), pEl=$("#projects"), note=$("#skillNote");
+function renderFilters(){
+  fEl.innerHTML=CATS.map(([k,l])=>`<button class="chip" data-k="${k}" aria-pressed="${!activeSkill&&k===active}">${l}</button>`).join("");
+}
+function renderProjects(){
+  const list=PROJECTS.filter(p=> activeSkill ? p.stack.includes(activeSkill) : (active==="all"||p.cat.includes(active)));
+  note.innerHTML=activeSkill?`Showing ${list.length} project${list.length===1?"":"s"} that use <strong>${esc(activeSkill)}</strong>.<button class="linkish" id="clearSkill">Show all</button>`:"";
+  pEl.innerHTML=list.map(p=>`
+   <article class="proj${p.featured&&active==="all"&&!activeSkill?" featured":""}" id="p-${p.id}">
+    <div class="proj-top"><h3>${esc(p.title)}</h3>${p.badge?`<span class="badge">${p.badge}</span>`:""}</div>
+    <p class="sum">${esc(p.sum)}</p>
+    <ul class="stack">${p.stack.map(s=>`<li${s===activeSkill?' class="hit"':""}>${esc(s)}</li>`).join("")}</ul>
+    <div class="more" id="m-${p.id}"><div><ul>${p.more.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div></div>
+    <div class="proj-actions">
+      <button class="linkish" aria-expanded="false" aria-controls="m-${p.id}" data-toggle="${p.id}">Show details</button>
+      ${p.links.map(([l,u])=>`<a class="linkish" href="${u}" target="_blank" rel="noopener">${l}</a>`).join("")}
+    </div>
+   </article>`).join("");
+}
+function renderSkills(){
+  $("#skillGrid").innerHTML=SKILLS.map(([h,items])=>`<div><h3>${h}</h3><ul>${items.map(s=>{
+    const n=PROJECTS.filter(p=>p.stack.includes(s)).length;
+    return n?`<li><button class="sk" data-skill="${esc(s)}"><span>${esc(s)}</span><small>${n} project${n>1?"s":""}</small></button></li>`:`<li><span>${esc(s)}</span></li>`;
+  }).join("")}</ul></div>`).join("");
+}
+fEl.addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b)return; active=b.dataset.k; activeSkill=null; renderFilters(); renderProjects();});
+pEl.addEventListener("click",e=>{
+  const b=e.target.closest("[data-toggle]"); if(!b)return;
+  const card=document.getElementById("p-"+b.dataset.toggle);
+  const open=card.classList.toggle("open");
+  b.setAttribute("aria-expanded",open); b.textContent=open?"Hide details":"Show details";
+});
+note.addEventListener("click",e=>{ if(e.target.id==="clearSkill"){ activeSkill=null; active="all"; renderFilters(); renderProjects(); }});
+$("#skillGrid").addEventListener("click",e=>{
+  const b=e.target.closest(".sk"); if(!b)return;
+  activeSkill=b.dataset.skill; renderFilters(); renderProjects();
+  document.getElementById("work").scrollIntoView({behavior:reduced?"auto":"smooth"});
+});
+renderFilters(); renderProjects(); renderSkills();
+
+/* ================= ask: BM25 retrieval ================= */
+(function(){
+  const DOCS=[
+   {t:"Medical imaging experience",x:"Yes. My main focus is AI for retinal imaging. OcuVal segments retinal fluid in OCT scans from three scanner vendors, RetinaPrep audits fundus image datasets for leakage, and I built a diabetic retinopathy classifier with ResNet18."},
+   {t:"OcuVal",x:"OcuVal is my current project: DICOM-native segmentation of intraretinal fluid, subretinal fluid and pigment epithelial detachment in OCT scans, trained on the RETOUCH challenge dataset with cross-vendor validation across Cirrus, Spectralis and Topcon, and IEC 62304 style documentation."},
+   {t:"RetinaPrep and data leakage",x:"RetinaPrep curates retinal fundus datasets and audits them for data leakage, such as the same patient or duplicate images appearing in both train and test sets. It publishes audit reports on GitHub Pages."},
+   {t:"ConsultRAG",x:"ConsultRAG is a security-first RAG assistant for consulting teams. It redacts PII and PHI before indexing, isolates each client engagement with role-based access, uses hybrid dense plus BM25 retrieval fused with RRF and an optional cross-encoder reranker, and gives cited answers. Built with FastAPI, pgvector, Ollama, Next.js and Docker, evaluated with hit@k, recall@k and MRR."},
+   {t:"GenAI and LLM agents",x:"I build LLM applications and agents: a medical research agent with LangChain, Pinecone and OpenAI, a multi-agent job copilot with LangGraph, an AI resume tailoring app, and Draftly, a Gmail reply agent in Java."},
+   {t:"Education",x:"M.Tech in Ophthalmic Engineering from IIT Hyderabad with CGPA 9.18, admitted through GATE 2023 Environmental Science with a score of 450. B.Tech in Civil Engineering from Bangalore Institute of Technology, 2021."},
+   {t:"M.Tech thesis",x:"My thesis used finite element modelling in Abaqus and Python to study how suture tension affects corneal biomechanics after penetrating keratoplasty, a full thickness corneal transplant. It gave me a deep understanding of eye anatomy."},
+   {t:"Work experience",x:"I worked as an Associate Consultant intern at Orbees Medical from August to October 2025, my first industry role in the medical domain. Since then I have been building medical imaging AI projects full time."},
+   {t:"Programming skills",x:"Python is my main language. I also use SQL, JavaScript, Java and C++. For machine learning I use TensorFlow, scikit-learn, and deep learning for segmentation and classification. For backends I use FastAPI, Flask and Django, with PostgreSQL, MySQL and Docker."},
+   {t:"Data analytics",x:"I do data analysis and visualisation with SQL, Excel, Power BI and Tableau, for example a pizza sales analytics dashboard, plus healthcare predictive analytics and wildfire prediction models."},
+   {t:"Availability and roles",x:"I am open to AI/ML engineer, medical imaging AI, computer vision and data roles, especially in healthcare and medtech. I am open to relocation and remote work and can join quickly."},
+   {t:"Why hire me",x:"I combine domain knowledge of the eye from an ophthalmic engineering M.Tech with hands-on AI engineering. I care about data quality, honest evaluation and documentation, which matter most in medical AI."},
+   {t:"Contact",x:"The best way to reach me is email, using the contact section at the bottom of this page. You can also find me on LinkedIn and GitHub at Anurag-YadavIIH."}
+  ];
+  const STOP=new Set("a an the is are was were be been of to in on for and or with by at as it his he him i me my you your what which who how does do did has have had any about this that from can tell".split(" "));
+  const SYN={cv:"vision",resume:"resume",imaging:"imaging images image",images:"imaging image",llm:"llm genai agents",ai:"ai machine",job:"roles work",hire:"hire why",skills:"skills programming",degree:"education",college:"education",university:"education",rag:"rag retrieval",experience:"experience work",projects:"project",eye:"eye retinal ophthalmic",contact:"contact email reach",email:"contact email",gpa:"cgpa",cgpa:"cgpa education",leak:"leakage",leakage:"leakage",thesis:"thesis",python:"python"};
+  const stem=w=>w.replace(/(ing|ed|es|s)$/,"");
+  const tok=s=>s.toLowerCase().replace(/[^a-z0-9+ ]/g," ").split(/\s+/).filter(w=>w&&!STOP.has(w));
+  const expand=ws=>ws.flatMap(w=>(SYN[w]?SYN[w].split(" "):[]).concat(w)).map(stem);
+  const docs=DOCS.map(d=>{ const w=tok(d.t+" "+d.t+" "+d.x).map(stem); const tf={}; w.forEach(x=>tf[x]=(tf[x]||0)+1); return {...d,tf,len:w.length}; });
+  const N=docs.length, avg=docs.reduce((a,d)=>a+d.len,0)/N, df={};
+  docs.forEach(d=>Object.keys(d.tf).forEach(k=>df[k]=(df[k]||0)+1));
+  function search(q){
+    const qs=[...new Set(expand(tok(q)))];
+    return docs.map(d=>{ let s=0; qs.forEach(t=>{ const f=d.tf[t]; if(!f)return; const idf=Math.log(1+(N-df[t]+.5)/(df[t]+.5)); s+=idf*f*2.5/(f+1.5*(.25+.75*d.len/avg)); }); return {d,s}; })
+      .sort((a,b)=>b.s-a.s);
+  }
+  const ans=$("#answer");
+  function run(q){
+    q=q.trim(); if(!q) return;
+    const r=search(q), top=r[0];
+    if(!top||top.s<.4){ ans.innerHTML=`<p>I couldn't find that in my portfolio. Try asking about my projects, education or skills, or email me directly.</p>`; return; }
+    const max=top.s;
+    ans.innerHTML=`<p>${esc(top.d.x)}</p><p class="hits-label">Passages retrieved, with BM25 scores</p><ul class="hits">${r.slice(0,3).filter(h=>h.s>0).map(h=>`<li><span>${esc(h.d.t)}</span><span class="bar"><i style="width:${(h.s/max*100).toFixed(0)}%"></i></span><span class="sc">${h.s.toFixed(1)}</span></li>`).join("")}</ul>`;
+  }
+  const SUG=["Has he worked with medical images?","What is ConsultRAG?","Where did he study?","What does he code in?","Why should we hire him?"];
+  $("#suggest").innerHTML=SUG.map(s=>`<button type="button">${s}</button>`).join("");
+  $("#suggest").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b)return; $("#askInput").value=b.textContent; run(b.textContent); });
+  $("#askForm").addEventListener("submit",e=>{ e.preventDefault(); run($("#askInput").value); });
+})();
+
+/* ================= leakage demo ================= */
+(function(){
+  const P=10, IMG=4, hues=[0,36,60,120,170,200,230,270,300,330];
+  let mode="image";
+  const tr=$("#trainDots"), te=$("#testDots");
+  const dot=(p,leak)=>`<span class="pd${leak?" leak":""}" style="background:hsl(${hues[p]} 60% 45%)" title="Patient ${p+1}">${p+1}</span>`;
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function run(){
+    let train=[], test=[];
+    if(mode==="image"){
+      const imgs=shuffle([...Array(P*IMG)].map((_,i)=>Math.floor(i/IMG)));
+      test=imgs.slice(0,12); train=imgs.slice(12);
+    } else {
+      const pts=shuffle([...Array(P).keys()]); const tp=new Set(pts.slice(0,3));
+      for(let p=0;p<P;p++) for(let k=0;k<IMG;k++) (tp.has(p)?test:train).push(p);
+    }
+    train.sort((a,b)=>a-b); test.sort((a,b)=>a-b);
+    const both=new Set(test.filter(p=>train.includes(p)));
+    tr.innerHTML=train.map(p=>dot(p,both.has(p))).join("");
+    te.innerHTML=test.map(p=>dot(p,both.has(p))).join("");
+    [tr,te].forEach(el=>{ el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); });
+    const n=$("#leakNum"); n.textContent=both.size; n.className="leak-num "+(both.size?"bad":"good");
+    $("#leakMsg").textContent= both.size
+      ? "These patients (ringed) are in both sets. The model can learn to recognise the patient's eye instead of the disease, so the test score looks better than it really is."
+      : "No patient appears on both sides, so the test score shows how the model does on people it has never seen. This is the honest way to split medical data.";
+  }
+  $("#splitMode").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b)return; mode=b.dataset.m;
+    [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed",x===b)); run(); });
+  $("#reshuffle").addEventListener("click",run);
+  run();
+})();
+
+/* ================= synthetic OCT ================= */
+(function(){
+  const RW=720, RH=320;
+  let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647; return (seed-1)/2147483646};
+  const g=(t,c,w)=>Math.exp(-(((t-c)/w)**2));
+  const B={ilm:[],nfl:[],gcl:[],ipl:[],inl:[],opl:[],elm:[],ez:[],nb:[],rpeTop:[],rpeBot:[],bm:[]};
+  for(let x=0;x<RW;x++){
+    const t=x/RW, fov=g(t,.52,.075);
+    const srf=26*g(t,.57,.065), ped=22*g(t,.28,.04);
+    const bm=238+6*Math.sin(t*2.4+.4)+2*Math.sin(t*9);
+    const rpeTop=bm-9-ped, rpeBot=rpeTop+9;
+    const nb=rpeTop-srf;
+    const ilm=58+7*Math.sin(t*3+1)+2.5*Math.sin(t*12)+46*fov-srf*.85;
+    const s=1-.9*fov;
+    const nfl=ilm+(8+14*t)*s, gcl=nfl+15*s, ipl=gcl+11*s, inl=ipl+14*s, opl=inl+8*s;
+    const ez=nb-9, elm=ez-6;
+    Object.entries({ilm,nfl,gcl,ipl,inl,opl,elm,ez,nb,rpeTop,rpeBot,bm}).forEach(([k,v])=>B[k][x]=v);
+  }
+  const cysts=[[.45,.55,16,9],[.49,.35,11,7],[.505,.72,20,11],[.555,.45,13,8],[.6,.6,10,6],[.42,.3,7,5]].map(([cx,f,rx,ry])=>{
+    const x=Math.round(cx*RW); return {x, y:B.ipl[x]+(B.elm[x]-B.ipl[x])*f, rx, ry};
+  });
+  const vessels=Array.from({length:16},()=>({x:rnd()*RW,r:3+rnd()*6,d:rnd()}));
+  const val=new Float32Array(RW*RH), lab=new Uint8Array(RW*RH);
+  for(let x=0;x<RW;x++){
+    for(let y=0;y<RH;y++){
+      let v,l=0; const b=k=>B[k][x];
+      if(y<b("ilm")) v=.03;
+      else if(y<b("nfl")) v=.78;
+      else if(y<b("gcl")) v=.46;
+      else if(y<b("ipl")) v=.64;
+      else if(y<b("inl")) v=.27;
+      else if(y<b("opl")) v=.56;
+      else if(y<b("elm")) v=.17;
+      else if(y<b("elm")+1.6) v=.5;
+      else if(y<b("ez")) v=.28;
+      else if(y<b("ez")+3) v=.9;
+      else if(y<b("nb")) v=.38;
+      else if(y<b("rpeTop")){ v=.04; l=2; }
+      else if(y<b("rpeBot")) v=.97;
+      else if(y<b("bm")){ v=.1; l=3; }
+      else {
+        const depth=(y-b("bm"))/(RH-b("bm")); v=.5*(1-depth*.85);
+        for(const ve of vessels){ const dy=b("bm")+12+ve.d*40; if(((x-ve.x)/(ve.r*1.6))**2+((y-dy)/ve.r)**2<1){v*=.55;break} }
+      }
+      if(y>=b("ipl")&&y<b("elm")){ for(const c of cysts){ if(((x-c.x)/c.rx)**2+((y-c.y)/c.ry)**2<1){v=.03;l=1;break} } }
+      val[y*RW+x]=v; lab[y*RW+x]=l;
+    }
+  }
+  /* three scanner "styles": speckle, gamma, gain, horizontal smoothing, tint */
+  const VENDORS=[
+    {noise:1.3, gamma:.9, gain:1.0, smooth:0, tint:[1,1,1]},
+    {noise:.55, gamma:1.25, gain:1.12, smooth:2, tint:[1,1,1]},
+    {noise:1.7, gamma:.75, gain:.85, smooth:0, tint:[1,.97,.9]}
+  ];
+  const mk=()=>{const c=document.createElement("canvas"); c.width=RW; c.height=RH; return c};
+  const baseC=mk(), overC=mk();
+  function buildBase(vi){
+    const V=VENDORS[vi], img=new ImageData(RW,RH); let s2=11+vi*97; const r2=()=>{s2=(s2*16807)%2147483647; return (s2-1)/2147483646};
+    const row=new Float32Array(RW);
+    for(let y=0;y<RH;y++){
+      let rn=0;
+      for(let x=0;x<RW;x++){ rn=rn*.55+r2()*.45; row[x]=Math.min(1,Math.max(0,val[y*RW+x]*V.gain*(1-.3*V.noise/1.3+rn*.9*V.noise))); }
+      for(let x=0;x<RW;x++){
+        let n=row[x];
+        if(V.smooth){ let a=0,c=0; for(let k=-V.smooth;k<=V.smooth;k++){ const xx=x+k; if(xx>=0&&xx<RW){a+=row[xx];c++;} } n=a/c; }
+        n=Math.pow(Math.min(1,n),V.gamma)*255; const i=(y*RW+x)*4;
+        img.data[i]=n*V.tint[0]; img.data[i+1]=n*V.tint[1]; img.data[i+2]=n*V.tint[2]; img.data[i+3]=255;
+      }
+    }
+    baseC.getContext("2d").putImageData(img,0,0);
+  }
+  const COL={1:[227,161,0],2:[22,184,200],3:[194,64,138]}, on={1:true,2:true,3:true};
+  function buildOver(){
+    const img=new ImageData(RW,RH);
+    for(let i=0;i<RW*RH;i++){ const l=lab[i]; if(l&&on[l]){ const c=COL[l]; img.data[i*4]=c[0]; img.data[i*4+1]=c[1]; img.data[i*4+2]=c[2]; img.data[i*4+3]=150; } }
+    overC.getContext("2d").putImageData(img,0,0);
+  }
+  buildBase(0); buildOver();
+  const cv=$("#scan"), ctx=cv.getContext("2d"), range=$("#scanRange"), frame=$("#scanFrame");
+  let reveal=0;
+  function draw(){
+    const W=cv.width,H=cv.height, rx=W*reveal;
+    ctx.drawImage(baseC,0,0,W,H);
+    ctx.save(); ctx.beginPath(); ctx.rect(0,0,rx,H); ctx.clip(); ctx.drawImage(overC,0,0,W,H); ctx.restore();
+    if(reveal>0.002&&reveal<.998){
+      ctx.fillStyle="rgba(255,255,255,.9)"; ctx.fillRect(rx-2,0,4,H);
+      ctx.beginPath(); ctx.arc(rx,H/2,30,0,Math.PI*2); ctx.fillStyle="#fff"; ctx.fill();
+      ctx.fillStyle="#15222C";
+      ctx.beginPath(); ctx.moveTo(rx-6,H/2-11); ctx.lineTo(rx-17,H/2); ctx.lineTo(rx-6,H/2+11); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(rx+6,H/2-11); ctx.lineTo(rx+17,H/2); ctx.lineTo(rx+6,H/2+11); ctx.fill();
+    }
+  }
+  function set(r){ reveal=Math.min(1,Math.max(0,r)); range.value=Math.round(reveal*100); draw(); }
+  range.addEventListener("input",()=>set(range.value/100));
+  let dragging=false, userMoved=false;
+  const pos=e=>{const r=frame.getBoundingClientRect(); return (e.clientX-r.left)/r.width};
+  frame.addEventListener("pointerdown",e=>{dragging=true; userMoved=true; frame.setPointerCapture(e.pointerId); set(pos(e))});
+  frame.addEventListener("pointermove",e=>{ if(dragging||e.pointerType==="mouse"){ userMoved=true; set(pos(e)); } });
+  frame.addEventListener("pointerup",()=>dragging=false);
+  frame.addEventListener("pointercancel",()=>dragging=false);
+  $("#vendors").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b)return;
+    [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed",x===b)); buildBase(+b.dataset.v); draw(); });
+  $("#legend").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b)return;
+    const l=+b.dataset.l; on[l]=!on[l]; b.setAttribute("aria-pressed",on[l]); buildOver(); if(reveal<.05) set(1); else draw(); });
+  const target=.62;
+  if(reduced){ set(target); }
+  else{
+    const t0=performance.now()+350, dur=1600;
+    const step=now=>{ if(userMoved)return; const k=Math.max(0,Math.min(1,(now-t0)/dur)); set(target*(1-(1-k)**3)); if(k<1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+})();
+
+/* ================= AI Anurag chat ================= */
+(function(){
+  const ENDPOINT="/api/chat", LIMIT=5, STORE="aa-chat-v1";
+  const fab=$("#chatFab"), box=$("#chat"), log=$("#chatLog"), form=$("#chatForm"), input=$("#chatInput"), send=$("#chatSend"), left=$("#chatLeft"), sugs=$("#chatSugs");
+  let history=[], remaining=LIMIT, busy=false, started=false;
+  const today=new Date().toISOString().slice(0,10);
+  try{ const st=JSON.parse(localStorage.getItem(STORE)||"null"); if(st&&st.day===today){ remaining=st.remaining; history=st.history||[]; } }catch(e){}
+  const save=()=>{ try{ localStorage.setItem(STORE,JSON.stringify({day:today,remaining,history:history.slice(-12)})); }catch(e){} };
+  const linkify=t=>esc(t).replace(/(https?:\/\/[^\s)]+[^\s).,])/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/([\w.+-]+@[\w-]+\.[\w.]+)/g,'<a href="mailto:$1">$1</a>');
+  function add(role,text){ const d=document.createElement("div"); d.className="msg "+role; d.innerHTML=linkify(text); log.appendChild(d); log.scrollTop=log.scrollHeight; return d; }
+  function limitCard(text){
+    const d=document.createElement("div"); d.className="limit-card";
+    d.innerHTML=`${esc(text||"You've used all 5 questions for today. I'd love to continue the conversation directly.")}<div class="row"><a href="mailto:${EMAIL}">Email me</a><a class="alt" href="${LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a>${RESUME_URL?`<a class="alt" href="${RESUME_URL}" target="_blank" rel="noopener">Resume</a>`:""}</div>`;
+    log.appendChild(d); log.scrollTop=log.scrollHeight;
+  }
+  function refresh(){
+    left.textContent= remaining>0 ? `${remaining} of ${LIMIT} questions left today` : "No questions left today";
+    const off=busy||remaining<=0; input.disabled=remaining<=0; send.disabled=off;
+    sugs.style.display=(history.length||remaining<=0)?"none":"";
+  }
+  function start(){
+    if(started) return; started=true;
+    add("bot","Hi, I'm AI Anurag, an AI version of Anurag that answers from his resume and projects. You can ask me "+LIMIT+" questions a day. For anything personal, like salary or interviews, the real Anurag will reply by email.");
+    history.forEach(m=>add(m.role==="user"?"me":"bot",m.content));
+    if(remaining<=0) limitCard();
+    sugs.innerHTML=["What are you working on now?","Tell me about your medical imaging work","What is your tech stack?","Why should we hire you?"].map(q=>`<button type="button">${q}</button>`).join("");
+    refresh();
+  }
+  function open(){ start(); box.classList.add("open"); fab.setAttribute("aria-expanded","true"); setTimeout(()=>input.disabled?$("#chatClose").focus():input.focus(),50); }
+  function close(){ box.classList.remove("open"); fab.setAttribute("aria-expanded","false"); fab.focus(); }
+  async function ask(q){
+    q=q.trim(); if(!q||busy||remaining<=0) return;
+    busy=true; input.value=""; add("me",q); history.push({role:"user",content:q}); refresh();
+    const t=add("bot",""); t.innerHTML='<span class="typing-dots" aria-label="Typing"><i></i><i></i><i></i></span>';
+    try{
+      const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:history.slice(-6)})});
+      let data={}; try{ data=await r.json(); }catch(e){}
+      if(typeof data.remaining==="number") remaining=data.remaining;
+      if(r.ok&&data.answer){ t.innerHTML=linkify(data.answer); history.push({role:"assistant",content:data.answer}); }
+      else if(data.limit){ t.remove(); history.pop(); remaining=0; limitCard(data.error); }
+      else { t.innerHTML=linkify(data.error||("I couldn't connect just now. Please try again, or email me at "+EMAIL+".")); history.pop(); }
+    }catch(e){
+      t.innerHTML=linkify("I couldn't connect just now. Please try again, or email me at "+EMAIL+"."); history.pop();
+    }
+    busy=false; if(remaining<=0&&!log.querySelector(".limit-card")) limitCard(); save(); refresh(); log.scrollTop=log.scrollHeight;
+    if(!input.disabled) input.focus();
+  }
+  fab.addEventListener("click",open);
+  $("#chatClose").addEventListener("click",close);
+  box.addEventListener("keydown",e=>{ if(e.key==="Escape") close(); });
+  form.addEventListener("submit",e=>{ e.preventDefault(); ask(input.value); });
+  sugs.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) ask(b.textContent); });
+  document.querySelectorAll("[data-open-chat]").forEach(b=>b.addEventListener("click",e=>{ e.preventDefault(); open(); }));
+})();
+</script>
+</body>
+</html>
