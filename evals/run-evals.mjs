@@ -41,12 +41,28 @@ async function answer(q) {
   return (await chatCompletion([{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: q }])).answer;
 }
 
+// Free-tier providers return 429 when the tokens-per-minute limit is hit.
+// Wait and retry instead of counting it as a failed answer.
+const RETRY_WAITS_MS = [20000, 40000, 60000];
+async function answerWithRetry(q) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await answer(q);
+    } catch (e) {
+      if (e.status !== 429 || attempt >= RETRY_WAITS_MS.length) throw e;
+      const wait = RETRY_WAITS_MS[attempt];
+      console.log(`      rate limited, retrying in ${wait / 1000}s (${attempt + 1}/${RETRY_WAITS_MS.length})`);
+      await sleep(wait);
+    }
+  }
+}
+
 let pass = 0;
 const failures = [];
 for (const [i, c] of cases.entries()) {
   let a;
   try {
-    a = await answer(c.q);
+    a = await answerWithRetry(c.q);
   } catch (e) {
     a = `[error] ${e.message}`;
   }
@@ -57,7 +73,7 @@ for (const [i, c] of cases.entries()) {
   if (ok) pass++;
   else failures.push({ q: c.q, a, missing, forbidden, emDash });
   console.log(`${ok ? "PASS" : "FAIL"}  ${String(i + 1).padStart(2)}. ${c.q}`);
-  await sleep(Number(process.env.EVAL_DELAY_MS || 2500)); // stay under free-tier rate limits
+  await sleep(Number(process.env.EVAL_DELAY_MS || 4000)); // stay under free-tier rate limits
 }
 
 console.log(`\n${pass}/${cases.length} passed\n`);
