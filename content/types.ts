@@ -11,6 +11,11 @@ export type Metric = {
   label: string;
   value: string | null;
   placeholder: string;
+  /**
+   * Sentence used when this is the only metric left on a featured card, e.g.
+   * "Data from 3 scanner vendors: Cirrus, Spectralis, Topcon". Must contain the value.
+   */
+  inline?: string;
 };
 
 /** A block of case-study copy. null means "not written yet" and follows the same rule as Metric. */

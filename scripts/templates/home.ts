@@ -1,6 +1,6 @@
 import type { FeaturedProject, Site } from "../../content/types.ts";
 import { html, raw, type Html } from "../lib/html.ts";
-import { extLink, icon, metricGrid, metricValue, visibleMetrics, type Ctx } from "./parts.ts";
+import { extLink, icon, metricGrid, metricInline, metricValue, visibleMetrics, type Ctx } from "./parts.ts";
 
 function hero(site: Site): Html {
   const { hero: h, availability: a, person } = site;
@@ -68,14 +68,17 @@ function projectHead(p: FeaturedProject): Html {
 function work(site: Site, ctx: Ctx): Html {
   const [lead, ...rest] = site.work.featured;
   if (!lead) return html``;
-  const grid = metricGrid(lead.metrics, ctx);
+  // A grid only makes sense with 2+ metrics; a single one reads better as a line in the card.
+  const grid = metricGrid(lead.metrics, ctx, 2);
+  const shown = visibleMetrics(lead.metrics, ctx);
+  const single = !grid && shown.length === 1 ? shown[0] : undefined;
   return html`<section class="section" id="work" aria-labelledby="work-title">
   <div class="wrap">
     <p class="eyebrow">Selected work</p>
     <h2 id="work-title">${site.work.heading}</h2>
     ${site.work.intro ? html`<p class="intro">${site.work.intro}</p>` : ""}
     <div class="featured${grid ? " has-metrics" : ""}">
-      <article class="card">${projectHead(lead)}${projectLinks(lead)}</article>
+      <article class="card">${projectHead(lead)}${single ? metricInline(single) : ""}${projectLinks(lead)}</article>
       ${grid ? html`<div aria-label="${lead.name} metrics" role="group">${grid}</div>` : ""}
     </div>
     <div class="pair">
@@ -99,12 +102,8 @@ function demos(site: Site): Html {
     <p class="eyebrow">Demos</p>
     <h2 id="demos-title">${d.heading}</h2>
     <p class="intro">${d.intro}</p>
-    <div class="demo-links">
-      <a class="demo-link" href="#leak-demo"><strong>${d.leak.title}${icon.arrowRight}</strong><span>${d.leak.blurb}</span></a>
-      <a class="demo-link" href="#search-demo"><strong>${d.search.title}${icon.arrowRight}</strong><span>${d.search.blurb}</span></a>
-    </div>
     <div class="play">
-      <div class="panel" id="leak-demo" tabindex="-1">
+      <div class="panel" id="leak-demo">
         <h3>${d.leak.title}</h3>
         <p class="how">${d.leak.blurb}</p>
         <div class="seg" role="group" aria-label="Split method" id="splitMode">
@@ -121,7 +120,7 @@ function demos(site: Site): Html {
         </div>
         <button class="btn" id="reshuffle" type="button">Reshuffle</button>
       </div>
-      <div class="panel" id="search-demo" tabindex="-1">
+      <div class="panel" id="search-demo">
         <h3>${d.search.title}</h3>
         <p class="how">${d.search.blurb} For a real conversation, <button class="link-btn" type="button" data-open-chat aria-haspopup="dialog">ask AI Anurag</button>.</p>
         <form class="ask-row" id="askForm" role="search">

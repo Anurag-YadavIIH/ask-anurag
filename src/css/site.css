@@ -137,19 +137,14 @@ p{margin:0}
 .metric-value{font:700 clamp(1.9rem,3.5vw,2.6rem)/1 var(--font-head); letter-spacing:-.03em; color:var(--text)}
 .metric-label{font:400 .85rem/1.4 var(--font-mono); color:var(--secondary)}
 .headline-metric{display:flex; align-items:baseline; flex-wrap:wrap; gap:.4rem .75rem; padding:1rem 1.1rem; border:1px solid var(--border); border-radius:var(--r); background:var(--bg)}
+.inline-metric{display:flex; align-items:center; gap:.6rem; font:500 .9rem/1.45 var(--font-mono); color:var(--muted)}
+.inline-metric::before{content:""; flex:none; width:8px; height:8px; border-radius:2px; background:var(--accent)}
 .headline-metric .metric-value{font-size:2rem}
 /* Placeholder for a number that doesn't exist yet. Never shown in production builds. */
 .ph{display:inline-block; border:1.5px dashed var(--secondary); border-radius:8px; padding:.05em .3em; color:var(--secondary)}
 .ph-block{border:1.5px dashed var(--secondary); border-radius:var(--r-sm); padding:.75rem 1rem; color:var(--secondary); font:400 .9rem/1.5 var(--font-mono)}
 
 /* demos */
-.demo-links{display:grid; gap:1rem; margin-bottom:2.5rem}
-@media (min-width:760px){ .demo-links{grid-template-columns:repeat(2,minmax(0,1fr))} }
-.demo-link{display:flex; flex-direction:column; gap:.4rem; padding:1.25rem 1.4rem; border:1px solid var(--border); border-radius:var(--r); background:var(--surface); color:var(--text); text-decoration:none; transition:border-color .15s}
-.demo-link:hover{border-color:var(--accent); color:var(--text)}
-.demo-link strong{font:700 1.2rem/1.2 var(--font-head); display:flex; justify-content:space-between; align-items:center; gap:1rem}
-.demo-link strong svg{width:22px; height:22px; color:var(--accent)}
-.demo-link span{color:var(--muted); font-size:.95rem}
 .play{display:grid; grid-template-columns:minmax(0,1fr); gap:1.5rem}
 @media (min-width:960px){ .play{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .panel{border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(1.25rem,3vw,1.75rem); background:var(--surface); scroll-margin-top:84px}
@@ -245,6 +240,9 @@ p{margin:0}
 /* chat */
 .chat-fab{position:fixed; right:max(16px,env(safe-area-inset-right)); bottom:max(16px,env(safe-area-inset-bottom)); z-index:40; display:flex; align-items:center; gap:.6rem; min-height:52px; padding:.4rem 1.1rem .4rem .4rem; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-weight:600; cursor:pointer; box-shadow:0 12px 30px -10px rgba(0,0,0,.6)}
 .chat-fab:hover{border-color:var(--accent)}
+/* On phones the button is tucked away while the hero OCT demo is on screen (nav.js), so it never covers the slider. */
+.chat-fab{transition:opacity .2s, transform .2s, visibility .2s}
+.chat-fab.tucked{visibility:hidden; opacity:0; transform:translateY(16px)}
 .chat-fab .av{width:40px; height:40px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:grid; place-items:center; font:700 .9rem var(--font-head); position:relative}
 .chat-fab .av::after{content:""; position:absolute; right:0; bottom:0; width:10px; height:10px; border-radius:50%; background:var(--ok); border:2px solid var(--surface)}
 .chat-fab[aria-expanded="true"]{display:none}

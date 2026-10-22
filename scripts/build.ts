@@ -27,6 +27,15 @@ const EM_DASH = "—";
   else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) findEmDashes(v, `${where}.${k}`);
 })(site, "site");
 
+/* ---------- guard: an inline metric sentence must state the metric's value ---------- */
+for (const p of site.work.featured) {
+  for (const m of p.metrics) {
+    if (m.inline && m.value !== null && !m.inline.includes(m.value)) {
+      throw new Error(`${p.name} metric "${m.label}": inline text "${m.inline}" doesn't contain its value "${m.value}"`);
+    }
+  }
+}
+
 /* ---------- assets ---------- */
 fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(path.join(dist, "js"), { recursive: true });

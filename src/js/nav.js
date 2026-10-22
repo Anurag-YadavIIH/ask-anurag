@@ -50,6 +50,21 @@ for (const ev of ["pointerover", "focusin"]) {
   }, { passive: true });
 }
 
+/* on phones, keep the chat button off the hero OCT demo (the hero has its own "Ask AI Anurag") */
+const fab = document.querySelector(".chat-fab");
+const oct = document.getElementById("oct-demo");
+if (fab && oct) {
+  const phone = matchMedia("(max-width: 760px)");
+  let octOnScreen = true;
+  const update = () => fab.classList.toggle("tucked", phone.matches && octOnScreen);
+  new IntersectionObserver(([entry]) => {
+    octOnScreen = entry.isIntersecting;
+    update();
+  }).observe(oct);
+  phone.addEventListener("change", update);
+  update();
+}
+
 /* demos: load their code when the section comes near the viewport */
 const demos = document.getElementById("demos");
 if (demos && cfg.demosJs) {

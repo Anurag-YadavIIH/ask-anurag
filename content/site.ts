@@ -95,7 +95,7 @@ export const site: Site = {
           { label: "Mean Dice, all fluid types", value: null, placeholder: "[0.00]" },
           // TODO(anurag): OcuVal Dice on a scanner vendor held out from training.
           { label: "Dice on an unseen vendor", value: null, placeholder: "[0.00]" },
-          { label: "Scanner vendors in the data", value: "3", placeholder: "3" },
+          { label: "Scanner vendors in the data", value: "3", placeholder: "3", inline: "Data from 3 scanner vendors: Cirrus, Spectralis, Topcon" },
           // TODO(anurag): number of OCT volumes in the OcuVal training set.
           { label: "OCT volumes in training", value: null, placeholder: "[N]" },
         ],

@@ -49,9 +49,16 @@ export function metricValue(m: Metric): Html {
   return html`<span class="metric-value"><span class="ph">${m.placeholder}</span><span class="sr-only"> (placeholder, not measured yet)</span></span>`;
 }
 
-export function metricGrid(metrics: Metric[], ctx: Ctx): Html | null {
+/** One metric as a line of text, for a card with a single metric left. */
+export function metricInline(m: Metric): Html {
+  if (m.value !== null && m.inline) return html`<p class="inline-metric">${m.inline}</p>`;
+  const value = m.value ?? html`<span class="ph">${m.placeholder}</span><span class="sr-only"> (placeholder, not measured yet)</span>`;
+  return html`<p class="inline-metric"><span>${value} ${m.label}</span></p>`;
+}
+
+export function metricGrid(metrics: Metric[], ctx: Ctx, min = 1): Html | null {
   const shown = visibleMetrics(metrics, ctx);
-  if (!shown.length) return null;
+  if (shown.length < min) return null;
   return html`<ul class="metrics">${shown.map((m) => html`<li>${metricValue(m)}<span class="metric-label">${m.label}</span></li>`)}</ul>`;
 }
 
