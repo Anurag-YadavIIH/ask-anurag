@@ -1,11 +1,12 @@
 // Synthetic retinal OCT B-scan with a fluid segmentation overlay (hero demo).
 // Drag or use the slider to reveal the overlay, switch scanner styles, toggle fluid types.
-// The pixel work is split into chunks that yield to the browser, so it never blocks input.
+// The pixel work starts once the page is idle and runs in small chunks that yield to the
+// browser, so it never blocks input. There is no load animation: the scan appears with
+// the overlay revealed to the slider position.
 const $ = (s) => document.querySelector(s);
-const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const yieldToBrowser = () => (globalThis.scheduler?.yield ? globalThis.scheduler.yield() : new Promise((r) => setTimeout(r, 0)));
 
-const RW = 720, RH = 320, ROWS_PER_CHUNK = 40;
+const RW = 720, RH = 320, ROWS_PER_CHUNK = 12;
 let seed = 7;
 const rnd = () => ((seed = (seed * 16807) % 2147483647), (seed - 1) / 2147483646);
 const g = (t, c, w) => Math.exp(-(((t - c) / w) ** 2));
@@ -115,9 +116,10 @@ async function buildBase(vi) {
 }
 
 const COL = { 1: [242, 184, 75], 2: [63, 193, 201], 3: [212, 90, 154] }, on = { 1: true, 2: true, 3: true };
-function buildOver() {
+async function buildOver() {
   const img = new ImageData(RW, RH);
   for (let i = 0; i < RW * RH; i++) {
+    if (i % (RW * ROWS_PER_CHUNK) === 0 && i) await yieldToBrowser();
     const l = lab[i];
     if (l && on[l]) {
       const c = COL[l];
@@ -160,11 +162,11 @@ function set(r) {
   draw();
 }
 
-let dragging = false, userMoved = false;
-range.addEventListener("input", () => { userMoved = true; set(range.value / 100); });
+let dragging = false;
+range.addEventListener("input", () => { set(range.value / 100); });
 const pos = (e) => { const r = frame.getBoundingClientRect(); return (e.clientX - r.left) / r.width; };
-frame.addEventListener("pointerdown", (e) => { dragging = true; userMoved = true; frame.setPointerCapture(e.pointerId); set(pos(e)); });
-frame.addEventListener("pointermove", (e) => { if (dragging || e.pointerType === "mouse") { userMoved = true; set(pos(e)); } });
+frame.addEventListener("pointerdown", (e) => { dragging = true; frame.setPointerCapture(e.pointerId); set(pos(e)); });
+frame.addEventListener("pointermove", (e) => { if (dragging || e.pointerType === "mouse") { set(pos(e)); } });
 frame.addEventListener("pointerup", () => (dragging = false));
 frame.addEventListener("pointercancel", () => (dragging = false));
 $("#vendors").addEventListener("click", async (e) => {
@@ -174,33 +176,25 @@ $("#vendors").addEventListener("click", async (e) => {
   await buildBase(+b.dataset.v);
   draw();
 });
-$("#legend").addEventListener("click", (e) => {
+$("#legend").addEventListener("click", async (e) => {
   const b = e.target.closest("button");
   if (!b) return;
   const l = +b.dataset.l;
   on[l] = !on[l];
   b.setAttribute("aria-pressed", String(on[l]));
-  buildOver();
+  await buildOver();
   if (reveal < 0.05) set(1);
   else draw();
 });
 
 (async () => {
+  await new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(r, { timeout: 1500 }) : setTimeout(r, 200)));
   for (let x = 0; x < RW; x += ROWS_PER_CHUNK) {
     fillColumnRange(x, Math.min(RW, x + ROWS_PER_CHUNK));
     await yieldToBrowser();
   }
   await buildBase(0);
-  buildOver();
+  await buildOver();
   ready = true;
-  const target = reveal;
-  if (reduced || userMoved) return set(reveal);
-  const t0 = performance.now() + 200, dur = 1400;
-  const step = (now) => {
-    if (userMoved) return;
-    const k = Math.max(0, Math.min(1, (now - t0) / dur));
-    set(target * (1 - (1 - k) ** 3));
-    if (k < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
+  set(reveal);
 })();

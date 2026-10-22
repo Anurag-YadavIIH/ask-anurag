@@ -154,7 +154,8 @@ export class Page {
   async press(key: "Tab" | "Enter" | "Escape", shift = false) {
     const codes = { Tab: 9, Enter: 13, Escape: 27 };
     const base = { key, code: key, windowsVirtualKeyCode: codes[key], modifiers: shift ? 8 : 0 };
-    await this.send("Input.dispatchKeyEvent", { ...base, type: "keyDown" });
+    // Enter only activates buttons and links when the key event carries its text.
+    await this.send("Input.dispatchKeyEvent", { ...base, type: "keyDown", ...(key === "Enter" ? { text: "\r" } : {}) });
     await this.send("Input.dispatchKeyEvent", { ...base, type: "keyUp" });
   }
 }
