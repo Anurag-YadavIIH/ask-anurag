@@ -35,7 +35,15 @@ test("detector finds each banned phrase, case-insensitively", () => {
   assert.deepEqual(findBannedClaims("Proven, and in production."), ["proven", "in production"]);
 });
 
-test("detector skips negated claims within 4 words in the same sentence", () => {
+test("detector skips claims negated by none, aren't, weren't, nor and without", () => {
+  assert.deepEqual(findBannedClaims("None of my projects are in production."), []);
+  assert.deepEqual(findBannedClaims("My projects aren't deployed to production."), []);
+  assert.deepEqual(findBannedClaims("They weren't production-ready."), []);
+  assert.deepEqual(findBannedClaims("Neither deployed nor in production."), []);
+  assert.deepEqual(findBannedClaims("Built as portfolio work without production-grade claims."), []);
+});
+
+test("detector skips negated claims within 5 words in the same sentence", () => {
   assert.deepEqual(findBannedClaims("These are portfolio efforts, not deployed in production."), []);
   assert.deepEqual(findBannedClaims("I have never used Kubernetes in production."), []);
   assert.deepEqual(findBannedClaims("It isn't production-ready yet."), []);
