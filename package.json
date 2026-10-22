@@ -16,6 +16,7 @@
     "test": "node --test",
     "check": "npm run typecheck && npm run lint && npm test && npm run build",
     "og": "node scripts/og.ts",
+    "verify": "node scripts/verify.ts",
     "eval": "node evals/run-evals.mjs"
   },
   "devDependencies": {
