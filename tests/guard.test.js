@@ -153,6 +153,6 @@ test("a guarded retry counts as one question and logs one line without question 
   assert.equal(res.body.remaining, 4);
   const guardLogs = console.log.mock.calls.map((c) => c.arguments[0]).filter((l) => l.includes('"event":"guard"'));
   assert.equal(guardLogs.length, 1);
-  assert.deepEqual(JSON.parse(guardLogs[0]), { event: "guard", phrases: ["proven"], retry: "fixed" });
+  assert.deepEqual(JSON.parse(guardLogs[0]), { event: "guard", phrases: ["proven"], placeholders: 0, retry: "fixed" });
   assert.ok(!guardLogs[0].includes("hire"));
 });

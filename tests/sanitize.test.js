@@ -11,7 +11,7 @@ test("em dash becomes a comma, with any spaces around it", () => {
 test("em dash next to other punctuation leaves no ', ,' behind", () => {
   assert.equal(sanitizeText("Hyderabad,\u2014 which"), "Hyderabad, which");
   assert.equal(sanitizeText("in progress. \u2014Final"), "in progress. Final");
-  assert.equal(sanitizeText("\u2014 first item\n  \u2014 nested"), "- first item\n  - nested");
+  assert.equal(sanitizeText("\u2014 first item\n  \u2014 nested"), "\u2022 first item\n  \u2022 nested");
 });
 
 test("en dash becomes a hyphen", () => {
@@ -40,7 +40,7 @@ test("curly quotes and apostrophes become straight", () => {
 
 test("double spaces collapse but line breaks and list indentation stay", () => {
   assert.equal(sanitizeText("Hello  there\u00A0 friend"), "Hello there friend");
-  assert.equal(sanitizeText("Skills:  \n  - Python  \n  - PyTorch"), "Skills:\n  - Python\n  - PyTorch");
+  assert.equal(sanitizeText("Skills:  \n  - Python  \n  - PyTorch"), "Skills:\n  • Python\n  • PyTorch");
 });
 
 test("llm client returns sanitized answers", async () => {
