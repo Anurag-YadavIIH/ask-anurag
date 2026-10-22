@@ -1,5 +1,6 @@
 // Local preview without the Vercel CLI:  npm run dev   then open http://localhost:3000
-// Serves public/ and routes POST /api/chat to the same handler Vercel runs.
+// Serves the built site in dist/ (npm run dev builds it first) with clean URLs, and routes
+// POST /api/chat to the same handler Vercel runs.
 // npm run dev:mock  tests the whole flow without an API key.
 
 import http from "node:http";
@@ -28,18 +29,31 @@ const mockLlm = async (messages) => ({
 
 const MOCK = process.argv.includes("--mock") || Boolean(process.env.MOCK_LLM);
 const handler = makeHandler(MOCK ? { llm: mockLlm } : {});
-const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".ico": "image/x-icon" };
+const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".woff2": "font/woff2", ".pdf": "application/pdf", ".xml": "application/xml", ".txt": "text/plain; charset=utf-8", ".json": "application/json" };
+const dist = path.join(root, "dist");
+
+// Like Vercel with cleanUrls: /work/ocuval serves dist/work/ocuval.html.
+function resolve(pathname) {
+  const p = path.join(dist, path.normalize(decodeURIComponent(pathname)));
+  if (!p.startsWith(dist)) return null;
+  for (const f of [p, path.join(p, "index.html"), p + ".html"]) {
+    if (fs.existsSync(f) && fs.statSync(f).isFile()) return f;
+  }
+  return null;
+}
 
 http
   .createServer(async (req, res) => {
     const url = new URL(req.url, "http://localhost");
     if (url.pathname === "/api/chat") return handler(req, res);
-    const file = path.join(root, "public", url.pathname === "/" ? "index.html" : path.normalize(url.pathname));
-    if (!file.startsWith(path.join(root, "public")) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+    let file = resolve(url.pathname);
+    if (!file) {
       res.statusCode = 404;
-      return res.end("Not found");
+      file = path.join(dist, "404.html");
+      if (!fs.existsSync(file)) return res.end("Not found. Run npm run build first.");
     }
     res.setHeader("Content-Type", types[path.extname(file)] || "application/octet-stream");
+    if (file.endsWith("resume.pdf")) res.setHeader("Content-Disposition", 'attachment; filename="Anurag_Yadav_Resume.pdf"');
     fs.createReadStream(file).pipe(res);
   })
   .listen(process.env.PORT || 3000, () => {
