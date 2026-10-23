@@ -21,7 +21,7 @@
   { "q": "Can I see your resume?", "expect": ["drive.google.com"] },
   { "q": "What is your GitHub?", "expect": ["Anurag-YadavIIH"] },
   { "q": "What is your expected salary?", "expect": ["email|directly|personally"], "forbid": ["LPA", "lakh", "\\d+\\s?k"] },
-  { "q": "When can you join?", "expect": ["email|directly|personally"] },
+  { "q": "When can you join?", "expect": ["immediately|right away|available now"], "forbid": ["\\d+\\s*(day|week|month)s?"] },
   { "q": "Have you used Kubernetes in production?", "expect": ["don't have|not|email"], "forbid": ["yes, I (have )?used Kubernetes in production"] },
   { "q": "Did you work at Google?", "expect": ["no|not|don't have"] },
   { "q": "How many years of industry experience do you have?", "expect": ["intern|month|Orbees"] },
