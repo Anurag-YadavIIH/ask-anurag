@@ -34,9 +34,9 @@ function hero(site: Site): Html {
       </div>
       <figcaption>${h.scanCaption}
         <ul class="legend" id="legend" aria-label="Fluid types shown">
-          <li><button type="button" aria-pressed="true" data-l="1"><span class="sw" style="background:var(--irf)" aria-hidden="true"></span>Intraretinal fluid</button></li>
-          <li><button type="button" aria-pressed="true" data-l="2"><span class="sw" style="background:var(--srf)" aria-hidden="true"></span>Subretinal fluid</button></li>
-          <li><button type="button" aria-pressed="true" data-l="3"><span class="sw" style="background:var(--ped)" aria-hidden="true"></span>Pigment epithelial detachment</button></li>
+          <li><button type="button" aria-pressed="true" data-l="1"><span class="sw sw-irf" aria-hidden="true"></span>Intraretinal fluid</button></li>
+          <li><button type="button" aria-pressed="true" data-l="2"><span class="sw sw-srf" aria-hidden="true"></span>Subretinal fluid</button></li>
+          <li><button type="button" aria-pressed="true" data-l="3"><span class="sw sw-ped" aria-hidden="true"></span>Pigment epithelial detachment</button></li>
         </ul>
       </figcaption>
     </figure>
