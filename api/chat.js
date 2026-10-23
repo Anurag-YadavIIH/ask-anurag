@@ -2,8 +2,8 @@
 // Body: { "messages": [ { "role": "user" | "assistant", "content": "..." }, ... ] }
 // Reply: { "answer": "...", "remaining": 3 }  or  { "error": "...", "limit": true }
 
-import { SYSTEM_PROMPT, CONTACT_EMAIL } from "../lib/prompt.js";
-import { chatCompletion, findBannedClaims, removeBannedClaims } from "../lib/llm.js";
+import { SYSTEM_PROMPT, CONTACT_EMAIL, RESUME_URL } from "../lib/prompt.js";
+import { chatCompletion, findBannedClaims, findPlaceholders, fixPlaceholders, removeBannedClaims } from "../lib/llm.js";
 import { createLimiter } from "../lib/limits.js";
 
 const MAX_QUESTION_CHARS = 500;
@@ -14,30 +14,38 @@ export const GUARD_FALLBACK = `I don't have a good answer to that here. Please e
 
 let limiter;
 
-// The prompt forbids claims like "proven" or "production-grade", but the model
-// sometimes makes them anyway. If an answer does, ask once more with the phrase
-// named; if that still fails, cut the offending bullet or sentence from the first
-// answer. Either way the visitor is charged one question.
+const problems = (answer) => ({ phrases: findBannedClaims(answer), placeholders: findPlaceholders(answer).length });
+const isClean = (p) => !p.phrases.length && !p.placeholders;
+
+// The prompt forbids claims like "proven" or "production-grade" and asks for real
+// URLs, but the model sometimes breaks both rules. If an answer does, ask once more
+// with the problem named; if that still fails, fix the first answer: put the resume
+// URL in place of a resume placeholder, drop other placeholders, and cut the
+// bullet or sentence with a banned claim. Either way the visitor is charged one question.
 export async function answerWithGuard(llm, messages, opts) {
   const first = await llm(messages, opts);
-  const phrases = findBannedClaims(first.answer);
-  if (!phrases.length) return first;
+  const found = problems(first.answer);
+  if (isClean(found)) return first;
+  const { phrases, placeholders } = found;
 
   let retry = "error";
   try {
-    const note = `Your previous draft used ${phrases.map((p) => `"${p}"`).join(" and ")}, which is not allowed. Rewrite the answer without that claim, restating only what the FACTS say.`;
-    const second = await llm([...messages, { role: "assistant", content: first.answer }, { role: "system", content: note }], opts);
-    if (!findBannedClaims(second.answer).length) {
-      console.log(JSON.stringify({ event: "guard", phrases, retry: "fixed" }));
+    const notes = [];
+    if (phrases.length) notes.push(`Your previous draft used ${phrases.map((p) => `"${p}"`).join(" and ")}, which is not allowed. Rewrite the answer without that claim, restating only what the FACTS say.`);
+    if (placeholders) notes.push("Use the actual URL from the FACTS, not a placeholder.");
+    const second = await llm([...messages, { role: "assistant", content: first.answer }, { role: "system", content: notes.join(" ") }], opts);
+    if (isClean(problems(second.answer))) {
+      console.log(JSON.stringify({ event: "guard", phrases, placeholders, retry: "fixed" }));
       return second;
     }
-    retry = "still_banned";
+    retry = "still_bad";
   } catch {
-    // fall through and clean the first answer
+    // fall through and fix the first answer
   }
-  const cleaned = removeBannedClaims(first.answer);
-  console.log(JSON.stringify({ event: "guard", phrases, retry, fallback: cleaned ? "removed" : "email" }));
-  return { ...first, answer: cleaned ?? GUARD_FALLBACK };
+  let cleaned = placeholders ? fixPlaceholders(first.answer, { resumeUrl: RESUME_URL }) : first.answer;
+  if (phrases.length) cleaned = removeBannedClaims(cleaned);
+  console.log(JSON.stringify({ event: "guard", phrases, placeholders, retry, fallback: cleaned ? "fixed" : "email" }));
+  return { ...first, answer: cleaned || GUARD_FALLBACK };
 }
 
 function send(res, status, body, extraHeaders = {}) {

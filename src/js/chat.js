@@ -2,10 +2,13 @@
 const ENDPOINT = "/api/chat", LIMIT = 5, STORE = "aa-chat-v1";
 const SUGGESTIONS = ["What are you working on now?", "Tell me about your medical imaging work", "When can you join?", "Why should we hire you?"];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const linkify = (t) =>
+// Answers are plain text; this escapes them and turns URLs and email addresses
+// into links. The domain pattern can't end in a dot, so "email me at x@y.com."
+// links to x@y.com, not x@y.com. (exported for tests).
+export const linkify = (t) =>
   esc(t)
     .replace(/(https?:\/\/[^\s)]+[^\s).,])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
-    .replace(/([\w.+-]+@[\w-]+\.[\w.]+)/g, '<a href="mailto:$1">$1</a>');
+    .replace(/([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g, '<a href="mailto:$1">$1</a>');
 
 export function init(cfg) {
   const box = document.createElement("section");
