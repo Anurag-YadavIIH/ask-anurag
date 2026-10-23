@@ -3,7 +3,7 @@
   <path d="M8 22c8-4 16 6 24 2s16-6 24-2" fill="none" stroke="#4FD1D9" stroke-width="4" stroke-linecap="round"/>
   <path d="M8 34c8-4 16 6 24 2s16-6 24-2" fill="none" stroke="#9FB2B8" stroke-width="3" stroke-linecap="round" opacity=".7"/>
   <path d="M8 46c8-3 16 4 24 1s16-4 24-1" fill="none" stroke="#E4ECEE" stroke-width="4" stroke-linecap="round"/>
-  <ellipse cx="22" cy="40" rx="5" ry="3" fill="#F2B84B"/>
-  <ellipse cx="38" cy="41" rx="6" ry="3.2" fill="#3FC1C9"/>
-  <ellipse cx="48" cy="42" rx="3.5" ry="2.4" fill="#D45A9A"/>
+  <ellipse cx="22" cy="40" rx="5" ry="3" fill="#FFAE42"/>
+  <ellipse cx="38" cy="41" rx="6" ry="3.2" fill="#4FD0D8"/>
+  <ellipse cx="48" cy="42" rx="3.5" ry="2.4" fill="#F296CC"/>
 </svg>

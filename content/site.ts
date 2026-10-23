@@ -47,7 +47,7 @@ export const site: Site = {
   meta: {
     title: "Anurag Yadav | AI for medical imaging",
     description:
-      "Anurag Yadav, M.Tech Ophthalmic Engineering (IIT Hyderabad). Retinal imaging pipelines, OCT segmentation that holds up across scanners, and secure RAG systems in Python.",
+      "Anurag Yadav, M.Tech Ophthalmic Engineering (IIT Hyderabad). Builds retinal imaging pipelines, tests whether OCT segmentation holds up across scanners, and builds secure RAG systems in Python.",
     ogAlt: "Anurag Yadav: AI for medical images, built by someone who studied the eye.",
   },
 
@@ -61,7 +61,7 @@ export const site: Site = {
   hero: {
     h1: "AI for medical images, built by someone who studied the eye.",
     subline:
-      "I build retinal imaging pipelines and segmentation models that hold up across scanners, plus secure RAG systems in Python. M.Tech in Ophthalmic Engineering, IIT Hyderabad.",
+      "I build retinal imaging pipelines and test whether segmentation models hold up across scanners, plus secure RAG systems in Python. M.Tech in Ophthalmic Engineering, IIT Hyderabad.",
     primaryCta: { label: "See my work", href: "#work" },
     secondaryCta: "Email me",
     askAi: "Ask AI Anurag",
@@ -86,7 +86,7 @@ export const site: Site = {
         tag: "Current project, in progress",
         title: "OcuVal: retinal fluid segmentation in OCT",
         summary:
-          "Segments intraretinal fluid, subretinal fluid and pigment epithelial detachment in OCT scans, reads DICOM directly, and checks that the model holds up across scanners from different manufacturers.",
+          "Segments intraretinal fluid, subretinal fluid and pigment epithelial detachment in OCT scans, reads DICOM directly, and tests whether the model holds up across scanners from different manufacturers.",
         tech: ["Python", "Deep learning", "Segmentation", "DICOM", "RETOUCH dataset"],
         repo: { label: "Code on GitHub", href: `${GH}/retinal-oct-fluid-segmentation` },
         extraLinks: [],
@@ -110,12 +110,15 @@ export const site: Site = {
           ],
           approach: [
             "Segments three retinal fluid types: intraretinal fluid (IRF), subretinal fluid (SRF) and pigment epithelial detachment (PED).",
-            "The focus is cross-vendor validation: checking that the model holds up on scans from each manufacturer.",
+            "The focus is cross-vendor validation: testing whether the model holds up on scans from each manufacturer.",
             "Documentation is modelled on IEC 62304, the standard for medical device software.",
             "Training runs on Kaggle GPUs.",
           ],
           results: {
-            intro: ["Results are still in progress, so there are no final metrics yet."],
+            intro: [
+              "Results are still in progress, so there are no final metrics yet.",
+              "The evaluation had a defect, found on 16 October 2026, and results will be posted once it is corrected.",
+            ],
             metrics: [
               // TODO(anurag): same numbers as the OcuVal card above.
               { label: "Mean Dice, all fluid types", value: null, placeholder: "[0.00]" },
@@ -243,7 +246,7 @@ export const site: Site = {
     heading: "From concrete to corneas to code",
     paragraphs: [
       "I started as a civil engineer. Structural thinking led me to biomechanics, and an M.Tech at IIT Hyderabad took me into ophthalmic engineering, where my thesis simulated how suture tension changes the cornea after a transplant.",
-      "That work showed me how much of eye care runs on images. Now I build AI for retinal imaging, auditing datasets so models can be trusted and segmenting disease in OCT scans across devices, plus applied GenAI systems with the same habits: careful data handling, honest evaluation and clear documentation.",
+      "That work showed me how much of eye care runs on images. Now I build AI for retinal imaging, auditing datasets so models can be trusted and testing whether OCT segmentation holds up across devices, plus applied GenAI systems with the same habits: careful data handling, honest evaluation and clear documentation.",
     ],
     timeline: [
       {
@@ -302,7 +305,7 @@ export const site: Site = {
   footer: { note: "OCT image and demos are synthetic and generated in your browser. No patient data." },
 
   searchDocs: [
-    { t: "Medical imaging experience", x: "Yes. My main focus is AI for retinal imaging. OcuVal segments retinal fluid in OCT scans from three scanner vendors, RetinaPrep audits fundus image datasets for leakage, and I built a diabetic retinopathy classifier with ResNet18." },
+    { t: "Medical imaging experience", x: "Yes. My main focus is AI for retinal imaging. OcuVal segments retinal fluid in OCT scans and tests the model on data from three scanner vendors, RetinaPrep audits fundus image datasets for leakage, and I built a diabetic retinopathy classifier with ResNet18." },
     { t: "OcuVal", x: "OcuVal is my current project: DICOM-native segmentation of intraretinal fluid, subretinal fluid and pigment epithelial detachment in OCT scans, trained on the RETOUCH challenge dataset with cross-vendor validation across Cirrus, Spectralis and Topcon, and IEC 62304 style documentation." },
     { t: "RetinaPrep and data leakage", x: "RetinaPrep curates retinal fundus datasets and audits them for data leakage, such as the same patient or duplicate images appearing in both train and test sets. It publishes audit reports on GitHub Pages." },
     { t: "ConsultRAG", x: "ConsultRAG is a security-first RAG assistant for consulting teams. It redacts PII and PHI before indexing, isolates each client engagement with role-based access, uses hybrid dense plus BM25 retrieval fused with RRF and an optional cross-encoder reranker, and gives cited answers. Built with FastAPI, pgvector, Ollama, Next.js and Docker, evaluated with hit@k, recall@k and MRR." },
