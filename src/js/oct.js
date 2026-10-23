@@ -162,11 +162,11 @@ async function buildBase(vi) {
 }
 
 /* ---------- segmentation overlay as vector shapes (source coordinates) ---------- */
-// Softer class colours; the legend uses the same values (--irf, --srf, --ped in site.css).
+// Class colours; the legend uses the same values (--irf, --srf, --ped in site.css).
 const CLASSES = {
-  1: { rgb: [226, 194, 126] }, // intraretinal fluid
-  2: { rgb: [134, 207, 211] }, // subretinal fluid
-  3: { rgb: [213, 156, 192] }, // pigment epithelial detachment
+  1: { rgb: [255, 174, 66] }, // intraretinal fluid, #FFAE42
+  2: { rgb: [79, 208, 216] }, // subretinal fluid, #4FD0D8
+  3: { rgb: [242, 150, 204] }, // pigment epithelial detachment, #F296CC
 };
 function bandPath(topKey, bottomKey, minGap = 0.6) {
   const p = new Path2D();

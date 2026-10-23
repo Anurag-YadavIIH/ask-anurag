@@ -12,7 +12,7 @@
   --bg:#0E181E; --surface:#13222A; --border:#22363F;
   --text:#E4ECEE; --muted:#B4C5CA; --secondary:#9FB2B8;
   --accent:#4FD1D9; --accent-ink:#06171C; --ok:#4ADE80; --warn:#FF8A7A;
-  --irf:#E2C27E; --srf:#86CFD3; --ped:#D59CC0; /* fluid classes, softened; must match CLASSES in src/js/oct.js */
+  --irf:#FFAE42; --srf:#4FD0D8; --ped:#F296CC; /* fluid classes; must match CLASSES in src/js/oct.js and FLUID in scripts/og.ts */
   --font-head:"Bricolage Grotesque","Heading Fallback",system-ui,sans-serif;
   --font-body:"IBM Plex Sans","Body Fallback",system-ui,sans-serif;
   --font-mono:"IBM Plex Mono","Mono Fallback",ui-monospace,monospace;
@@ -100,7 +100,7 @@ p{margin:0}
 .legend button{display:inline-flex; align-items:center; gap:.5rem; min-height:44px; padding:0 .85rem; border:1.5px solid var(--border); border-radius:var(--r-sm); background:transparent; color:var(--text); font-size:.9rem; cursor:pointer}
 .legend button[aria-pressed="false"]{color:var(--secondary); border-style:dashed}
 .legend button[aria-pressed="false"] .sw{opacity:.35}
-.sw{width:14px; height:14px; border-radius:4px; flex:none; border:1.5px solid var(--c); background:color-mix(in srgb,var(--c) 35%,transparent)}
+.sw{width:14px; height:14px; border-radius:4px; flex:none; border:1.5px solid var(--c); background:color-mix(in srgb,var(--c) 75%,transparent)} /* stronger than the 35% scan overlay so the three chips are distinct at a glance */
 .sw-irf{--c:var(--irf)} .sw-srf{--c:var(--srf)} .sw-ped{--c:var(--ped)}
 
 /* sections */

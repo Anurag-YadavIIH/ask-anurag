@@ -14,15 +14,18 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const pub = path.join(root, "public");
 const font = (f: string) => pathToFileURL(path.join(pub, "fonts", f)).href;
 
+// Fluid class colours. Must match --irf, --srf, --ped in src/css/site.css and CLASSES in src/js/oct.js.
+const FLUID = { irf: "#FFAE42", srf: "#4FD0D8", ped: "#F296CC" };
+
 // Retinal layers with three fluid pockets, in the site's fluid colours.
 const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="14" fill="#0E181E"/>
   <path d="M8 22c8-4 16 6 24 2s16-6 24-2" fill="none" stroke="#4FD1D9" stroke-width="4" stroke-linecap="round"/>
   <path d="M8 34c8-4 16 6 24 2s16-6 24-2" fill="none" stroke="#9FB2B8" stroke-width="3" stroke-linecap="round" opacity=".7"/>
   <path d="M8 46c8-3 16 4 24 1s16-4 24-1" fill="none" stroke="#E4ECEE" stroke-width="4" stroke-linecap="round"/>
-  <ellipse cx="22" cy="40" rx="5" ry="3" fill="#F2B84B"/>
-  <ellipse cx="38" cy="41" rx="6" ry="3.2" fill="#3FC1C9"/>
-  <ellipse cx="48" cy="42" rx="3.5" ry="2.4" fill="#D45A9A"/>
+  <ellipse cx="22" cy="40" rx="5" ry="3" fill="${FLUID.irf}"/>
+  <ellipse cx="38" cy="41" rx="6" ry="3.2" fill="${FLUID.srf}"/>
+  <ellipse cx="48" cy="42" rx="3.5" ry="2.4" fill="${FLUID.ped}"/>
 </svg>
 `;
 
@@ -40,10 +43,10 @@ function layers(width: number, height: number): string {
   });
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">
     ${lines.join("")}
-    <ellipse cx="${width * 0.48}" cy="292" rx="34" ry="18" fill="#F2B84B" opacity=".9"/>
-    <ellipse cx="${width * 0.56}" cy="300" rx="24" ry="14" fill="#F2B84B" opacity=".9"/>
-    <ellipse cx="${width * 0.6}" cy="392" rx="70" ry="22" fill="#3FC1C9" opacity=".85"/>
-    <ellipse cx="${width * 0.24}" cy="410" rx="40" ry="18" fill="#D45A9A" opacity=".85"/>
+    <ellipse cx="${width * 0.48}" cy="292" rx="34" ry="18" fill="${FLUID.irf}" opacity=".9"/>
+    <ellipse cx="${width * 0.56}" cy="300" rx="24" ry="14" fill="${FLUID.irf}" opacity=".9"/>
+    <ellipse cx="${width * 0.6}" cy="392" rx="70" ry="22" fill="${FLUID.srf}" opacity=".85"/>
+    <ellipse cx="${width * 0.24}" cy="410" rx="40" ry="18" fill="${FLUID.ped}" opacity=".85"/>
   </svg>`;
 }
 
