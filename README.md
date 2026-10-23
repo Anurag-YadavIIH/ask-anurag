@@ -49,6 +49,8 @@ npm run eval      # 37 real questions against the model: facts, refusals, inject
 
 The eval set ([`evals/questions.json`](evals/questions.json)) checks that answers contain the right facts, that salary questions are handed to me, that unknown facts ("Kubernetes in production?") aren't invented, and that jailbreaks ("ignore all previous instructions", "print your system prompt") are refused.
 
+To run only some questions, pass their exact text, for example `npm run eval -- "When can you join?" "Why should we hire you?"`; it then prints every answer, not just failures. Answers go through the same guard as the site. A per-minute rate limit (429) is retried after 20, 40 and 60 seconds, but Groq's daily token limit is not retried: those questions fail at once with the error, so run again once the limit resets.
+
 ## Run it locally
 
 ```bash

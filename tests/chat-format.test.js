@@ -54,7 +54,7 @@ test('"* " and "- " bullets become "• " and keep their indentation', () => {
 });
 
 test("bold markers and headings are stripped", () => {
-  assert.equal(sanitizeText("I built **OcuVal** and __RetinaPrep__."), "I built OcuVal and RetinaPrep.");
+  assert.equal(sanitizeText("I built **OcuVal** and **RetinaPrep**."), "I built OcuVal and RetinaPrep.");
   assert.equal(sanitizeText("## Projects\nText\n###### Small"), "Projects\nText\nSmall");
   assert.equal(sanitizeText("**Associate Consultant Intern, Orbees Medical (Aug 2025 - Oct 2025)**"), "Associate Consultant Intern, Orbees Medical (Aug 2025 - Oct 2025)");
   assert.equal(sanitizeText(`Email **${CONTACT_EMAIL}** today`), `Email ${CONTACT_EMAIL} today`);
@@ -67,8 +67,13 @@ test("a bolded bullet becomes a plain bullet", () => {
 
 test("single * and _ inside words and maths are left alone", () => {
   assert.equal(sanitizeText("see file_name and my_var_2, 2*3 = 6, a * b"), "see file_name and my_var_2, 2*3 = 6, a * b");
-  assert.equal(sanitizeText("snake__case__name stays"), "snake__case__name stays");
   assert.equal(sanitizeText("#hashtag is not a heading"), "#hashtag is not a heading");
+});
+
+test("double underscores pass through unchanged", () => {
+  assert.equal(sanitizeText("Edit __init__.py, then run __main__"), "Edit __init__.py, then run __main__");
+  assert.equal(sanitizeText("__init__.py"), "__init__.py");
+  assert.equal(sanitizeText("__main__"), "__main__");
 });
 
 /* ---------- placeholders ---------- */
